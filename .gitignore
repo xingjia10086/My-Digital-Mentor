@@ -1,0 +1,55 @@
+# === 环境变量 ===
+.env
+
+# === VPN / 代理配置（含私钥和密码）===
+*.yaml
+*.conf
+wireguard-*.conf
+add-iphone-peer.sh
+fix-wireguard.sh
+install-ss.sh
+wireguard-startup.sh
+
+# === 数据库和知识库 ===
+chroma_db/
+
+# === 个人文章数据 ===
+gongzhonghao/
+公众号/
+
+# === 二进制 / 媒体文件 ===
+*.mp3
+*.pptx
+*.jpg
+*.png
+*.json
+*.log
+*.txt
+
+# === 测试与调试脚本 ===
+test_*.py
+models.txt
+err.txt
+
+# === 生成文件 ===
+temp_generated.*
+*.vbs
+
+# === 部署脚本（含硬编码路径）===
+deploy_to_cloud.bat
+setup_daily_push.bat
+
+# === 系统 / IDE ===
+__pycache__/
+.claude/
+.vscode/
+.idea/
+*.pyc
+
+# === 个人笔记（含隐私信息）===
+星佳手记：美国全套数字身份搭建指南.md
+美国VPN使用指南.md
+xingjia智能系统.md
+C-Drive-Cleanup-Report.md
+twitter_api_guide.md
+my_mind_map.md

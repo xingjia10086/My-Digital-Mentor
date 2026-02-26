@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Buddhism Research Report</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #1A1A2E; color: #DDDDDD; overflow: hidden; }
+        .slide { width: 100vw; height: 100vh; display: none; position: absolute; top:0; left:0; align-items: center; justify-content: center; flex-direction: column; overflow: hidden; padding: 40px; box-sizing: border-box; }
+        .slide.active { display: flex; animation: fadein 0.5s; }
+        @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+        
+        .cover { text-align: left; align-items: flex-start; justify-content: center; padding-left: 10%; background-size: cover !important; background-position: right center !important; }
+        .cover .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #1A1A2E 40%, transparent 100%); z-index: 1; }
+        .cover-content { position: relative; z-index: 2; max-width: 50%; }
+        .cover h1 { font-size: 4em; color: #E8D49A; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .cover h2 { font-size: 2em; color: #CCCCCC; margin-bottom: 40px; }
+        
+        .section { background: #2D1B0E; text-align: center; }
+        .section h1 { font-size: 6em; color: #E8D49A; margin: 0; }
+        .section h2 { font-size: 2.5em; color: #CCCCCC; margin-top: 20px; font-weight: normal; }
+        
+        .content { flex-direction: row; justify-content: flex-start; align-items: flex-start; }
+        .content-left { width: 50%; padding: 40px 60px; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .content-left h1 { font-size: 2.5em; color: #E8D49A; margin-top: 0; border-bottom: 2px solid #E8D49A; padding-bottom: 15px; }
+        .content-left ul { font-size: 1.5em; line-height: 1.8; padding-left: 20px; }
+        .content-left li { margin-bottom: 20px; }
+        
+        .content-right { width: 50%; height: 80%; display: flex; align-items: center; justify-content: center; padding: 40px; }
+        .img-container { width: 100%; height: 100%; background-position: center; background-size: contain; background-repeat: no-repeat; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .toc h1 { font-size: 3em; color: #E8D49A; margin-bottom: 40px; }
+        .toc ul { font-size: 1.8em; line-height: 2; list-style-type: decimal; }
+        
+        .controls { position: fixed; bottom: 20px; right: 20px; z-index: 100; }
+        button { background: rgba(232, 212, 154, 0.2); color: #E8D49A; border: 1px solid #E8D49A; padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 4px; border:none; margin-left:10px; }
+        button:hover { background: #E8D49A; color: #1A1A2E; }
+    </style>
+</head>
+<body>
+
+        <div class="slide cover active" style="background: url('./Buddhism-Photos/2024-08-09_221058_IMG_20240809_221058.jpg');" id="slide-0">
+            <div class="overlay"></div>
+            <div class="cover-content">
+                <h1>圣境重现：藏传佛教艺术与建筑的文化精神考源</h1>
+                <h2>基于实地调研的视觉符号与信仰空间分析</h2>
+                <p style="color:#888; font-size:1.2em;">汇报人：学术汇报候选人</p>
+            </div>
+        </div>
+        <div class="slide toc " id="slide-1">
+            <h1>研究框架</h1>
+            <ul><li>壹 | 空间与色彩：建筑形制的信仰表达</li><li>贰 | 图像与符号：壁画与造像的视觉叙事</li><li>叁 | 现场与传承：实地调研与文化活态</li></ul>
+        </div>
+        <div class="slide section " id="slide-2">
+            <h1>壹</h1>
+            <h2>空间与色彩：建筑形制的信仰表达</h2>
+        </div>
+        <div class="slide content " id="slide-3">
+            <div class="content-left">
+                <h1>曼荼罗宇宙观下的建筑形制</h1>
+                <ul><li>依山就势的聚落形态：体现天人合一与须弥山宇宙观的物理映射</li><li>金顶与红白墙体：强烈的视觉张力与宗教等级秩序的物化表达</li><li>院落与经堂的向心性：通过空间收缩引导信众从世俗走向神圣冥想</li></ul>
+            </div>
+            <div class="content-right">
+                <div class="img-container" style="background-image: url('./Buddhism-Photos/2024-08-11_231912_IMG_20240811_231912.jpg');"></div>
+            </div>
+        </div>
+        <div class="slide content " id="slide-4">
+            <div class="content-left">
+                <h1>绛红与明黄：宗教色彩的深层隐喻</h1>
+                <ul><li>绛红色（僧袍与主墙）：象征出离心、慈悲以及降伏烦恼的内在力量</li><li>明黄色（金顶与法器）：代表般若智慧、尊贵地位与佛法的圆满无漏</li><li>色彩的对比与调和：在高原苍茫的自然环境中形成极具辨识度的视觉地标</li></ul>
+            </div>
+            <div class="content-right">
+                <div class="img-container" style="background-image: url('./Buddhism-Photos/2024-08-11_233634_IMG_20240811_233634.jpg');"></div>
+            </div>
+        </div>
+        <div class="slide section " id="slide-5">
+            <h1>贰</h1>
+            <h2>图像与符号：壁画与造像的视觉叙事</h2>
+        </div>
+        <div class="slide content " id="slide-6">
+            <div class="content-left">
+                <h1>壁画艺术中的教义图解与叙事</h1>
+                <ul><li>本生故事与佛传图：以散点透视与连环画式构图传递佛教伦理与因果观</li><li>矿物颜料的运用：历经岁月仍保持色彩鲜艳，彰显信仰的永恒与纯粹</li><li>线条与晕染技法：融合汉、藏、印多地艺术风格，展现独特的视觉张力</li></ul>
+            </div>
+            <div class="content-right">
+                <div class="img-container" style="background-image: url('./Buddhism-Photos/2024-08-12_234124_IMG_20240812_234124.jpg');"></div>
+            </div>
+        </div>
+        <div class="slide content " id="slide-7">
+            <div class="content-left">
+                <h1>信仰具象：法器与神祇符号的解构</h1>
+                <ul><li>金刚杵与莲花：象征坚不可摧的空性智慧与出淤泥而不染的清净本性</li><li>忿怒尊与寂静尊：展现佛教慈悲度化与降魔卫道的双重精神面貌</li><li>几何符号的重复：通过繁复的纹样与曼荼罗阵列营造超越世俗的冥想意境</li></ul>
+            </div>
+            <div class="content-right">
+                <div class="img-container" style="background-image: url('./Buddhism-Photos/2024-08-13_105028_IMG_20240813_105028.jpg');"></div>
+            </div>
+        </div>
+        <div class="slide section " id="slide-8">
+            <h1>叁</h1>
+            <h2>现场与传承：实地调研与文化活态</h2>
+        </div>
+        <div class="slide content " id="slide-9">
+            <div class="content-left">
+                <h1>调研纪实：信仰空间的在地体验</h1>
+                <ul><li>光影与仪式：自然光在殿堂内的克制运用极大增强了宗教神秘感与敬畏心</li><li>信众的身体参与：转经、磕长头等行为赋予了静态建筑以动态的生命力</li><li>物质与非物质的交融：艺术不仅是视觉展示，更是信众修行的重要法门</li></ul>
+            </div>
+            <div class="content-right">
+                <div class="img-container" style="background-image: url('./Buddhism-Photos/2024-08-13_105211_IMG_20240813_105211.jpg');"></div>
+            </div>
+        </div>
+        <div class="slide content " id="slide-10">
+            <div class="content-left">
+                <h1>藏传佛教艺术的现代保护与传承</h1>
+                <ul><li>数字化建档：利用现代科技对濒危壁画与木构建筑进行测绘与抢救性保护</li><li>传统工艺的延续：唐卡画师与建筑工匠的师徒传承现状与面临的时代挑战</li><li>跨文化语境下的传播：藏传佛教艺术在当代美学与心理疗愈中的价值重构</li></ul>
+            </div>
+            <div class="content-right">
+                <div class="img-container" style="background-image: url('./Buddhism-Photos/2024-08-21_212352_IMG_20240821_212352.jpg');"></div>
+            </div>
+        </div>
+        <div class="slide cover " style="background: url('./Buddhism-Photos/2024-10-15_125657_99734E2D-D195-411F-9E16-5BD86DE74598.JPG');" id="slide-11">
+            <div class="overlay"></div>
+            <div class="cover-content">
+                <h1>感谢聆听</h1>
+                <h2>敬请导师批评指正</h2>
+                <p style="color:#888; font-size:1.2em;"></p>
+            </div>
+        </div>
+<div class="controls">
+    <button onclick="prev()">❮ Prev</button>
+    <button onclick="next()">Next ❯</button>
+</div>
+
+<script>
+    let current = 0;
+    const slides = document.querySelectorAll('.slide');
+    function showSlide(n) {
+        slides[current].classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+    }
+    function next() { showSlide(current + 1); }
+    function prev() { showSlide(current - 1); }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'Space') next();
+        if (e.key === 'ArrowLeft') prev();
+    });
+</script>
+</body>
+</html>

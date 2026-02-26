@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  xingjia-ecosystem:
+    build: .
+    container_name: xingjia_brain
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./chroma_db:/app/chroma_db
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1

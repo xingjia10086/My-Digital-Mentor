@@ -1,0 +1,9 @@
+gongzhonghao/
+公众号/
+Buddhism-Photos/
+.git/
+__pycache__/
+*.mp3
+*.log
+*.json
+!ingestion_tracker.json
