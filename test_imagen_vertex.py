@@ -1,7 +1,7 @@
 import vertexai
 from vertexai.preview.vision_models import ImageGenerationModel
 
-PROJECT_ID = "gen-lang-client-0834352502"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
 LOCATION = "us-central1"
 
 print("Initializing Vertex AI...")

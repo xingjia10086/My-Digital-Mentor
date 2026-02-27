@@ -6,7 +6,7 @@ from google.cloud import aiplatform
 from vertexai.generative_models import GenerativeModel, Part, SafetySetting
 
 # Configuration
-PROJECT_ID = "gen-lang-client-0834352502"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
 LOCATION = "us-central1" # Default location
 PHOTO_DIR = r"D:\GPT\AI-demo\Buddhism-Photos"
 OUTPUT_FILE = r"D:\GPT\AI-demo\buddhism_analysis.json"

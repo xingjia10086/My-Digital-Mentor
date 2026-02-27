@@ -8,7 +8,7 @@ load_dotenv()
 print("--- Testing VertexAIEmbeddings ---")
 try:
     from langchain_google_vertexai import VertexAIEmbeddings
-    e1 = VertexAIEmbeddings(model_name='text-embedding-004', project='gen-lang-client-0834352502', location='us-central1')
+    e1 = VertexAIEmbeddings(model_name='text-embedding-004', project=os.environ.get("GCP_PROJECT_ID", ""), location='us-central1')
     res1 = e1.embed_query('hello')
     print("VERTEX SUCCESS. Length:", len(res1))
 except Exception as ex:

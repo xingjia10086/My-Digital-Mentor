@@ -1,57 +1,144 @@
-# 星佳的数字导师与数字分身系统 (Open Source Edition)
+<p align="center">
+  <img src="docs/images/ai_mentor.png" width="600" alt="AI Mentor Preview"/>
+</p>
 
-这是一个基于本地知识库（RAG）和多模态大模型的“个人数字生态”全能平台。通过摄入你自己的文章/日记/研究笔记，系统能完美复活你的思想脉络，并为你提供全天候的虚拟导师、自动推特生成分发、以及强大的知识图谱提取功能。
+<h1 align="center">🌌 My Digital Mentor · 我的数字导师</h1>
 
-## 🎯 核心功能
-1. **AI Mentor (灵魂导师)**: 随时找它倾诉困惑，它不仅会回答，还会巧妙地引用你自己过去写过的金句和段落开导你。
-2. **AI Writer (替身写作)**: 完全模仿“你的笔触”瞬间出稿千字长文。
-3. **Knowledge Graph (思想图谱)**: 自动将你过去的思想脉络可视化为高清思维导图。
-4. **Twitter Agent (全自动推文分发机)**: 定时从你的潜意识碎片库里随机翻找珍珠，重写为极具穿透力的美式推文，并自动发布在 X (Twitter) 上。
-5. **Feishu Bot (智能飞书主编)**: 每天定点给你个人的飞书推送你的历史认知金句，或是自动汇编播报当日 RSS 新闻。
+<p align="center">
+  <b>基于本地知识库 (RAG) + Google Gemini 大模型的全能个人数字生态系统</b><br/>
+  <i>Your Personal AI Ecosystem Powered by RAG + Google Gemini</i>
+</p>
 
-## 🚀 快速上手部署
+<p align="center">
+  <a href="#-快速上手"><img src="https://img.shields.io/badge/快速上手-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
+  <a href="#-功能展示"><img src="https://img.shields.io/badge/功能预览-2979FF?style=for-the-badge&logo=eye&logoColor=white" alt="Features"/></a>
+  <a href="README_EN.md"><img src="https://img.shields.io/badge/English-FF6F00?style=for-the-badge&logo=translate&logoColor=white" alt="English Version"/></a>
+</p>
 
-### 1. 环境准备
-确保你的电脑或服务器上已经安装了 **Python 3.10+**。
+---
 
-克隆本仓库到本地后，在终端执行以下命令安装依赖项：
+## 💡 这是什么？
+
+这是一套能**完美复活你思想脉络**的 AI 全栈系统。
+
+通过将你自己的文章、日记、研究笔记喂给系统，它会自动建立一个属于你的"第二大脑"，并为你提供全天候的虚拟导师、自动推特生成分发、以及强大的知识图谱提取功能。
+
+> *"把过去五年写过的上千篇公众号文章全部灌进 AI 的大脑，让它学会用你的口吻说话、写作、甚至帮你发推特。"*
+
+---
+
+## 🎯 功能展示
+
+### 🧠 灵魂导师 (AI Mentor)
+随时找它倾诉困惑。它不仅会回答，还会巧妙地引用你过去写过的金句和段落来开导你，附带可选的语音播报功能。
+
+<p align="center">
+  <img src="docs/images/ai_mentor.png" width="700" alt="AI Mentor"/>
+</p>
+
+---
+
+### ✍️ 替身写作 (AI Writer)
+完全模仿"你的笔触"瞬间出稿千字长文。系统会从你的知识库中检索相关历史文章，深度学习你的风格后进行高质量原创写作。
+
+<p align="center">
+  <img src="docs/images/ai_writer.png" width="700" alt="AI Writer"/>
+</p>
+
+---
+
+### 🤔 思想图谱 (Knowledge Graph)
+自动从你的历史文章库中随机抽取素材，提炼并可视化你的核心理念网络，生成极具社交传播力的高颜值思维导图。
+
+<p align="center">
+  <img src="docs/images/knowledge_graph.png" width="700" alt="Knowledge Graph"/>
+</p>
+
+---
+
+### 🐦 推特分发机 (Twitter Agent)
+从你的潜意识碎片库里随机打捞灵感，重写为极具穿透力的双语推文（中英对照），并附带 AI 配图 Prompt。
+
+<p align="center">
+  <img src="docs/images/twitter_agent.png" width="700" alt="Twitter Agent"/>
+</p>
+
+---
+
+## 🚀 快速上手
+
+### 1️⃣ 环境准备
+确保你的电脑上已经安装了 **Python 3.10+**。克隆本仓库后运行：
+
 ```bash
+git clone https://github.com/xingjia10086/My-Digital-Mentor.git
+cd My-Digital-Mentor
 pip install -r requirements.txt
 ```
 
-### 2. 获取并配置 API 密钥 (必读！)
-系统运行依赖于一些第三方大语言模型和平台的 API。我们在代码中已经做好了彻底的解耦。
+### 2️⃣ 配置 API 密钥
 
-在项目根目录下找到 `.env.example` 文件，**将其复制并重命名为 `.env`**，然后填入以下密钥：
+在项目根目录下找到 `.env.example`，**复制并重命名为 `.env`**，然后填入以下密钥：
 
-- **GOOGLE_API_KEY**: (核心大脑) 
-  - **去哪买/申请**：前往 [Google AI Studio](https://aistudio.google.com/)，登录谷歌账号后可免费获取（需科学上网环境，且支持极大的免费额度）。
-  - **作用**：驱动 Gemini 系列模型进行文本理解、推理和绘画翻译等工作。
-- **GCP_PROJECT_ID** 及 **GCP_LOCATION**: (可选) 如果你使用 GCP 的企业版 Vertex AI，则需填写。
-- **APP_PASSWORD**:
-  - **作用**：自己设置一个密码，用于拦截别人非法访问你的本地网页控制台。
-- **FEISHU_APP_ID** / **FEISHU_APP_SECRET**: (若使用飞书特工)
-  - **获取方式**：前往 [飞书开放平台](https://open.feishu.cn/)，创建一个企业自建应用，即可获得这俩个凭据，记得开通机器人权限。
-- **推特 API 密钥** (`TWITTER_API_KEY` 等四项): (若使用推特分发机)
-  - **获取方式**：前往 [Twitter Developer Portal](https://developer.twitter.com/)，注册开发者账号并创建一个 App 即可获得这四个 Token。
+| 变量名 | 用途 | 获取方式 |
+|---|---|---|
+| `GOOGLE_API_KEY` | 🧠 核心大脑引擎 | [Google AI Studio](https://aistudio.google.com/app/apikey) (免费) |
+| `GCP_PROJECT_ID` | 向量嵌入服务 | [Google Cloud Console](https://console.cloud.google.com/) |
+| `APP_PASSWORD` | 登录口令 | 自行设定任意密码 |
+| `FEISHU_APP_ID` / `SECRET` | 飞书推送 (可选) | [飞书开放平台](https://open.feishu.cn/) |
+| `TWITTER_API_KEY` 等 | 推特自动发布 (可选) | [Twitter Developer](https://developer.twitter.com/) |
 
-### 3. 构建你在数字世界的语料大脑 (RAG Ingestion)
-1. 将你的所有历史文章（`.txt`, `.md` 格式）放入 `gongzhonghao` 或 `公众号` 文件夹。项目中我已经留了一批示例文件供参考学习。
-2. 在终端运行清洗和特征提取脚本：
+> 💡 **最低要求**：只需要 `GOOGLE_API_KEY` 和 `GCP_PROJECT_ID` 即可运行核心的 AI Mentor、Writer 和 Knowledge Graph 功能。
+
+### 3️⃣ 构建你的 AI 大脑
+
+将你的文章（`.txt`、`.md` 格式）放入 `公众号/` 或 `gongzhonghao/` 文件夹，然后运行：
+
 ```bash
 python rag_ingest.py
 ```
-> 这个过程会将文本切割、向量化，并永久储存在你本地自动生成的 `chroma_db` 文件夹中。未来只要更新了新文章，重复运行上面这段代码即可增量更新大脑。
 
-### 4. 启动可视化控制端 Web UI
-准备就绪！输入：
+> 这会将你的文本切割、向量化，并存储在本地 `chroma_db/` 中。以后新增文章只需重新运行即可增量更新。
+
+### 4️⃣ 启动系统
+
 ```bash
 streamlit run web_ui.py
 ```
-然后在浏览器中打开提示的 URL（通常是 `http://localhost:8501`），输入你设置的 `APP_PASSWORD`，即可纵享自己的私人数字生态！
 
-## ⚠️ 开源声明与安全提醒
-本项目遵循 MIT 或相关开源协议。
-**绝对、绝对、绝对不要将带有你的真实密钥的 `.env` 文件推送到任何公开的 GitHub 仓库中！** 本仓库已经自带了严密的 `.gitignore` 防御，请在二次开发时不要修改它的防线。
+打开浏览器访问 `http://localhost:8501`，输入你设置的密码，开始享受你的私人数字生态！
 
-*Powered by Google Gemini & LangChain Chroma*
+---
+
+## 📁 项目结构
+
+```
+My-Digital-Mentor/
+├── web_ui.py              # 🌐 主系统 Web 界面（Streamlit）
+├── rag_ingest.py          # 📥 知识库构建脚本
+├── daily_push.py          # 📤 飞书每日金句推送（定时服务）
+├── feishu_bot.py          # 🤖 飞书智能新闻播报机器人
+├── twitter_auto_agent.py  # 🐦 推特自动发布代理
+├── .env.example           # 🔑 环境变量模板
+├── requirements.txt       # 📦 依赖清单
+├── 公众号/                # 📚 示例文章数据（可替换为你自己的内容）
+└── gongzhonghao/          # 📚 更多示例文章
+```
+
+---
+
+## ⚠️ 安全声明
+
+- 🔒 所有敏感配置均通过 `.env` 文件管理，**绝不会被 Git 跟踪**
+- 🛡️ `.gitignore` 已严格配置，自动拦截 `.env`、`chroma_db/`、VPN 配置等敏感文件
+- ⚡ 系统内置了 API Key 泄露自救面板：即使密钥失效，也不会崩溃，而是提供图形化的密钥更换界面
+
+> **⚠️ 重要提醒：绝对不要将你的 `.env` 文件推送到任何公开仓库！**
+
+---
+
+## 🤝 开源协议
+
+MIT License · 欢迎 Star ⭐ · 欢迎 Fork 🍴 · 欢迎 PR 🎉
+
+*Powered by Google Gemini & LangChain & ChromaDB*

@@ -5,7 +5,7 @@ try:
     from langchain_google_vertexai import VertexAIEmbeddings
     e = VertexAIEmbeddings(
         model_name="text-embedding-004",
-        project="gen-lang-client-0834352502",
+        project=os.environ.get("GCP_PROJECT_ID", ""),
         location="us-central1"
     )
     r = e.embed_query("hello world")

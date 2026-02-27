@@ -15,9 +15,9 @@ load_dotenv()
 FEISHU_APP_ID = os.environ.get("FEISHU_APP_ID", "")
 FEISHU_APP_SECRET = os.environ.get("FEISHU_APP_SECRET", "")
 # 注意：这里需要填写真实的 user open_id，建议也可以加入到 .env 中
-TARGET_USER_ID = os.environ.get("FEISHU_TARGET_USER_ID", "ou_ef03183d5527e0efbf021ca2c1ea3228")
+TARGET_USER_ID = os.environ.get("FEISHU_TARGET_USER_ID", "")
 
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
 LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")

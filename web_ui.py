@@ -9,10 +9,11 @@ from langchain_google_vertexai import VertexAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 
-load_dotenv()
+# Override loaded variables if environment variables already exist
+load_dotenv(override=True)
 
 # --- Configuration ---
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
 LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
 
 # Automatically use relative path
@@ -90,7 +91,7 @@ def generate_audio(text):
 def check_password():
     """Returns `True` if the user had the correct password."""
     def password_entered():
-        expected_password = os.environ.get("APP_PASSWORD", "xingjia2026")
+        expected_password = os.environ.get("APP_PASSWORD", "")
         if st.session_state["password"] == expected_password: 
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # don't store password
@@ -119,18 +120,49 @@ def main():
         st.error(f"❌ 找不到本地知识库目录：{CHROMA_PERSIST_DIR}。请先运行 `rag_ingest.py`。")
         st.stop()
         
-    try:
-        client, chosen_model, retriever, vectorstore = get_clients()
-    except Exception as e:
-        st.error(f"❌ 初始化失败: {e}")
-        st.stop()
-
-    # Navigation
+    # Navigation (Move to top so UI shell always loads)
     st.sidebar.title("🌌 星佳的数字生态")
     app_mode = st.sidebar.radio("选择功能模块", ["🧠 灵魂导师 (对话)", "✍️ 替身写作 (AI Writer)", "🤔 思想图谱 (Knowledge Graph)", "🐦 推特分发机 (Twitter Agent)"])
-    
     st.sidebar.markdown("---")
-    st.sidebar.info(f"**模型**: `{chosen_model}`\n\n**知识库**: 1.8万+ 切片")
+
+    try:
+        client, chosen_model, retriever, vectorstore = get_clients()
+        st.sidebar.info(f"**模型**: `{chosen_model}`\n\n**知识库**: 1.8万+ 切片")
+    except Exception as e:
+        st.error("❌ 核心大脑连接被阻断！")
+        st.warning("系统无法正常启动，具体原因如下（您的免费 API 密钥已被谷歌安全机制封禁）：", icon="⚠️")
+        st.code(str(e))
+        st.markdown("""
+        **解决方案：**
+        由于我们刚才将其推到了公开的 GitHub 仓库，您的旧 `GOOGLE_API_KEY` 已经被谷歌巡检发现并自动停用。
+        请您立刻去申请一个新的，然后在此处填入：
+        """)
+        new_key = st.text_input("🔑 输入全新的 GOOGLE_API_KEY", type="password")
+        if st.button("更新密钥并重启系统"):
+            env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+            if os.path.exists(env_file):
+                with open(env_file, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+                with open(env_file, 'w', encoding='utf-8') as f:
+                    found = False
+                    for line in lines:
+                        if line.startswith("GOOGLE_API_KEY="):
+                            f.write(f"GOOGLE_API_KEY={new_key}\n")
+                            found = True
+                        else:
+                            f.write(line)
+                    if not found:
+                        f.write(f"\nGOOGLE_API_KEY={new_key}\n")
+                        
+            # Force update of os.environ and cached variable
+            os.environ["GOOGLE_API_KEY"] = new_key
+            global API_KEY
+            API_KEY = new_key
+            
+            # Clear resource cache to force a re-init
+            st.cache_resource.clear()
+            st.rerun()
+        st.stop()
 
     if app_mode == "🧠 灵魂导师 (对话)":
         render_chat_mentor(client, chosen_model, vectorstore)
@@ -208,6 +240,7 @@ def render_chat_mentor(client, chosen_model, vectorstore):
 你的回答："""
 
             full_response = ""
+            audio_path = None
             try:
                 for chunk in client.models.generate_content_stream(model=chosen_model, contents=sys_prompt):
                     if chunk.text:
@@ -222,7 +255,6 @@ def render_chat_mentor(client, chosen_model, vectorstore):
                 full_response += source_text
                 message_placeholder.markdown(full_response)
                 
-                audio_path = None
                 if enable_voice:
                     with st.spinner("正在生成语音..."):
                         if generate_audio(full_response):
