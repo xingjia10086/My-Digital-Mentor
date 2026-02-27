@@ -5,6 +5,7 @@ langchain-community
 langchain-google-vertexai
 langchain-google-genai
 chromadb
-streamlit
 edge-tts
 python-dotenv
+lark-oapi
+schedule

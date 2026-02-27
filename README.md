@@ -68,45 +68,66 @@
 ## 🚀 快速上手
 
 ### 1️⃣ 环境准备
-确保你的电脑上已经安装了 **Python 3.10+**。克隆本仓库后运行：
+
+> ⚠️ **前置要求**：请确保你的电脑已安装 [Python 3.10+](https://www.python.org/downloads/) 和 [Git](https://git-scm.com/downloads)。
+
+打开终端（Windows: PowerShell / Mac: Terminal），依次执行：
 
 ```bash
+# 克隆项目到本地
 git clone https://github.com/xingjia10086/My-Digital-Mentor.git
 cd My-Digital-Mentor
+
+# 安装所有依赖（一键搞定）
 pip install -r requirements.txt
 ```
 
-### 2️⃣ 配置 API 密钥
+### 2️⃣ 配置 API 密钥（⭐ 最关键的一步）
 
-在项目根目录下找到 `.env.example`，**复制并重命名为 `.env`**，然后填入以下密钥：
+首先，复制一份环境变量模板文件：
 
-| 变量名 | 用途 | 获取方式 |
-|---|---|---|
-| `GOOGLE_API_KEY` | 🧠 核心大脑引擎 | [Google AI Studio](https://aistudio.google.com/app/apikey) (免费) |
-| `GCP_PROJECT_ID` | 向量嵌入服务 | [Google Cloud Console](https://console.cloud.google.com/) |
-| `APP_PASSWORD` | 登录口令 | 自行设定任意密码 |
-| `FEISHU_APP_ID` / `SECRET` | 飞书推送 (可选) | [飞书开放平台](https://open.feishu.cn/) |
-| `TWITTER_API_KEY` 等 | 推特自动发布 (可选) | [Twitter Developer](https://developer.twitter.com/) |
+```bash
+# Windows 用户
+copy .env.example .env
 
-> 💡 **最低要求**：只需要 `GOOGLE_API_KEY` 和 `GCP_PROJECT_ID` 即可运行核心的 AI Mentor、Writer 和 Knowledge Graph 功能。
+# Mac / Linux 用户
+cp .env.example .env
+```
+
+然后用任何文本编辑器打开新生成的 `.env` 文件，按下表填入你的密钥：
+
+| 变量名 | 是否必填 | 用途 | 获取方式 |
+|---|:---:|---|---|
+| `GOOGLE_API_KEY` | ✅ 必填 | 驱动 AI 对话与写作 | 打开 [Google AI Studio](https://aistudio.google.com/app/apikey)，登录 Google 账号，点击 **Create API Key** 即可（免费） |
+| `GCP_PROJECT_ID` | ✅ 必填 | 文本向量化服务 | 打开 [Google Cloud Console](https://console.cloud.google.com/)，在页面**顶部导航栏**的项目选择器中复制你的「项目 ID」。没有项目的话点 **New Project** 新建一个 |
+| `APP_PASSWORD` | ✅ 必填 | Web 界面登录密码 | 自己随便设一个即可（比如 `mypassword123`） |
+| `FEISHU_APP_ID` / `SECRET` | ❌ 可选 | 飞书推送 | [飞书开放平台](https://open.feishu.cn/) 创建自建应用 |
+| `TWITTER_API_KEY` 等 | ❌ 可选 | 推特自动发布 | [Twitter Developer](https://developer.twitter.com/) 创建 App |
+
+> 💡 **小白提示**：如果只想体验核心功能（AI 对话、写作、知识图谱），只需要填前三项！飞书和推特相关的留空不影响。
 
 ### 3️⃣ 构建你的 AI 大脑
 
-将你的文章（`.txt`、`.md` 格式）放入 `公众号/` 或 `gongzhonghao/` 文件夹，然后运行：
+将你的文章（`.txt`、`.md` 格式）放入 `公众号/` 或 `gongzhonghao/` 文件夹。
+
+> 💡 项目已自带示例文章，你可以先不替换直接体验效果。
+
+然后运行：
 
 ```bash
 python rag_ingest.py
 ```
 
-> 这会将你的文本切割、向量化，并存储在本地 `chroma_db/` 中。以后新增文章只需重新运行即可增量更新。
+> 这会自动将文本切割、向量化，并存储在本地 `chroma_db/` 中。以后新增文章只需重新运行即可增量更新。
 
-### 4️⃣ 启动系统
+### 4️⃣ 启动系统 🎉
 
 ```bash
 streamlit run web_ui.py
 ```
 
-打开浏览器访问 `http://localhost:8501`，输入你设置的密码，开始享受你的私人数字生态！
+等待几秒，终端会显示 `Local URL: http://localhost:8501`。
+打开浏览器访问该地址，输入你在第 2 步设置的密码，开始享受你的私人数字生态！
 
 ---
 
