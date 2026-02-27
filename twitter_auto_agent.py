@@ -5,9 +5,12 @@ import logging
 from datetime import datetime
 import schedule
 import tweepy
+from dotenv import load_dotenv
 from google import genai
 from langchain_community.vectorstores import Chroma
 from langchain_google_vertexai import VertexAIEmbeddings
+
+load_dotenv()
 
 # --- Logging Setup ---
 logging.basicConfig(
@@ -20,25 +23,25 @@ console_handler.setLevel(logging.INFO)
 logging.getLogger().addHandler(console_handler)
 
 # --- Twitter API Credentials (User Needs to Fill These) ---
-# ======= [星佳请注意：在这里填入你刚申请的 4 把钥匙] =======
-TWITTER_API_KEY = "YOUR_API_KEY_HERE"
-TWITTER_API_SECRET = "YOUR_API_SECRET_HERE"
-TWITTER_ACCESS_TOKEN = "YOUR_ACCESS_TOKEN_HERE"
-TWITTER_ACCESS_SECRET = "YOUR_ACCESS_SECRET_HERE"
+TWITTER_API_KEY = os.environ.get("TWITTER_API_KEY", "")
+TWITTER_API_SECRET = os.environ.get("TWITTER_API_SECRET", "")
+TWITTER_ACCESS_TOKEN = os.environ.get("TWITTER_ACCESS_TOKEN", "")
+TWITTER_ACCESS_SECRET = os.environ.get("TWITTER_ACCESS_SECRET", "")
 # ==========================================================
 
 # --- Vertex AI & ChromaDB Setup ---
-PROJECT_ID = "gen-lang-client-0834352502" 
-LOCATION = "us-central1"
-CHROMA_PERSIST_DIR = r"D:\GPT\AI-demo\chroma_db"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
 EMBEDDING_MODEL = "text-embedding-004"
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 MODEL_NAME = "gemini-2.5-pro"  
 
 def init_twitter_client():
     """初始化 Twitter v2 客户端"""
-    if "YOUR_API_KEY_HERE" in TWITTER_API_KEY:
-        logging.error("❌ 尚未配置 Twitter API 密钥！请先去 https://developer.twitter.com 申请并填入代码中。")
+    if not TWITTER_API_KEY:
+        logging.error("❌ 尚未配置 Twitter API 密钥！请在 .env 文件中填入。")
         return None
     
     try:

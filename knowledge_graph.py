@@ -1,16 +1,20 @@
 import os
 import json
+from dotenv import load_dotenv
 from google import genai
 from langchain_google_vertexai import VertexAIEmbeddings
 from langchain_community.vectorstores import Chroma
 import random
 
+load_dotenv()
+
 # --- Configuration ---
-PROJECT_ID = "gen-lang-client-0834352502" 
-LOCATION = "us-central1"
-CHROMA_PERSIST_DIR = r"D:\GPT\AI-demo\chroma_db"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
 EMBEDDING_MODEL = "text-embedding-004"
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 
 client = genai.Client(api_key=API_KEY)
 
@@ -95,7 +99,7 @@ def main():
     print("\n" + "=" * 60)
     
     # Save the output to a markdown file
-    output_file = r"D:\GPT\AI-demo\my_mind_map.md"
+    output_file = os.path.join(BASE_DIR, "my_mind_map.md")
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write("# 星佳的个人思想图谱\n\n")
         f.write("（由 AI 随机抓取历史片段生成的核心词汇逻辑关系）\n\n")

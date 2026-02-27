@@ -1,0 +1,1 @@
+models/gemini-embedding-001

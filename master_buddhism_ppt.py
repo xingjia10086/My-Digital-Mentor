@@ -6,14 +6,18 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
 # Set up your GCP / Studio API Key here
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
-PHOTO_DIR = r"D:\GPT\AI-demo\Buddhism-Photos"
-OUTPUT_PPTX = r"D:\GPT\AI-demo\Master_Buddhism_Report_Pro.pptx"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PHOTO_DIR = os.path.join(BASE_DIR, "Buddhism-Photos")
+OUTPUT_PPTX = os.path.join(BASE_DIR, "Master_Buddhism_Report_Pro.pptx")
 
 # Configure Google AI SDK
 genai.configure(api_key=API_KEY)

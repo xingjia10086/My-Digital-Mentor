@@ -1,15 +1,19 @@
 import os
 import argparse
+from dotenv import load_dotenv
 from google import genai
 from langchain_google_vertexai import VertexAIEmbeddings
 from langchain_community.vectorstores import Chroma
 
+load_dotenv()
+
 # --- Configuration ---
-PROJECT_ID = "gen-lang-client-0834352502" 
-LOCATION = "us-central1"
-CHROMA_PERSIST_DIR = r"D:\GPT\AI-demo\chroma_db"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
 EMBEDDING_MODEL = "text-embedding-004"
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 client = genai.Client(api_key=API_KEY)
 
 

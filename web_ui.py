@@ -3,23 +3,23 @@ import re
 import subprocess
 import random
 import streamlit as st
+from dotenv import load_dotenv
 from google import genai
 from langchain_google_vertexai import VertexAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 
-# --- Configuration ---
-PROJECT_ID = "gen-lang-client-0834352502" 
-LOCATION = "us-central1"
+load_dotenv()
 
-# Automatically use relative path in Docker, fallback to absolute for local dev
-if os.path.exists("./chroma_db"):
-    CHROMA_PERSIST_DIR = "./chroma_db"
-else:
-    CHROMA_PERSIST_DIR = r"D:\GPT\AI-demo\chroma_db"
+# --- Configuration ---
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+
+# Automatically use relative path
+CHROMA_PERSIST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chroma_db")
 
 EMBEDDING_MODEL = "text-embedding-004"
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 MAX_HISTORY = 3
 TEMP_AUDIO_FILE = "web_voice.mp3"
 
@@ -90,8 +90,8 @@ def generate_audio(text):
 def check_password():
     """Returns `True` if the user had the correct password."""
     def password_entered():
-        # Using a simple hardcoded password for the demo / MVP
-        if st.session_state["password"] == "xingjia2026": 
+        expected_password = os.environ.get("APP_PASSWORD", "xingjia2026")
+        if st.session_state["password"] == expected_password: 
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # don't store password
         else:
@@ -482,9 +482,12 @@ def render_twitter_agent(client, chosen_model, vectorstore):
                 sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
 
         with st.spinner("正在用极为犀利的文字重塑推特内容..."):
+            topic_instruction = f"当前用户非常明确地希望你探讨的主题是：【{topic}】。你必须绝对优先围绕这个主题展开推文！如果你提供的历史碎片中没有直接相关的内容，请结合你自身的商业认知强行切入到该主题！\n" if topic.strip() else ""
+            
             prompt = f"""你是星佳，一位在 X (Twitter) 上拥有高影响力的华语商业与个人成长博主。
 请结合以下从你过去公众号文章中提取的【思想切片】，写一条能在推特上引发广泛共鸣和转发的高质量推文（Tweet）。
 
+{topic_instruction}
 【思想切片来源】：
 {context_str}
 

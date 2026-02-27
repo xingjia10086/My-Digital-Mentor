@@ -1,0 +1,70 @@
+Traceback (most recent call last):
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 84, in _write
+    self._write_content_types_stream(phys_writer)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 94, in _write_content_types_stream
+    phys_writer.write(
+    ~~~~~~~~~~~~~~~~~^
+        CONTENT_TYPES_URI,
+        ^^^^^^^^^^^^^^^^^^
+        serialize_part_xml(_ContentTypesItem.xml_for(self._parts)),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 236, in write
+    self._zipf.writestr(pack_uri.membername, blob)
+    ^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\util.py", line 191, in __get__
+    value = self._fget(obj)
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 241, in _zipf
+    return zipfile.ZipFile(
+           ~~~~~~~~~~~~~~~^
+        self._pkg_file, "w", compression=zipfile.ZIP_DEFLATED, strict_timestamps=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\zipfile\__init__.py", line 1367, in __init__
+    self.fp = io.open(file, filemode)
+              ~~~~~~~^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'D:\\GPT\\AI-demo\\Master_Buddhism_Report_Pro.pptx'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GPT\AI-demo\build_pptx.py", line 122, in <module>
+    main()
+    ~~~~^^
+  File "D:\GPT\AI-demo\build_pptx.py", line 118, in main
+    prs.save(OUTPUT_PPTX)
+    ~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\presentation.py", line 50, in save
+    self.part.save(file)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\parts\presentation.py", line 112, in save
+    self.package.save(path_or_stream)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\opc\package.py", line 156, in save
+    PackageWriter.write(pkg_file, self._rels, tuple(self.iter_parts()))
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 79, in write
+    cls(pkg_file, pkg_rels, parts)._write()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 83, in _write
+    with _PhysPkgWriter.factory(self._pkg_file) as phys_writer:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 232, in __exit__
+    self._zipf.close()
+    ^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pptx\util.py", line 191, in __get__
+    value = self._fget(obj)
+  File "C:\Python313\Lib\site-packages\pptx\opc\serialized.py", line 241, in _zipf
+    return zipfile.ZipFile(
+           ~~~~~~~~~~~~~~~^
+        self._pkg_file, "w", compression=zipfile.ZIP_DEFLATED, strict_timestamps=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\zipfile\__init__.py", line 1367, in __init__
+    self.fp = io.open(file, filemode)
+              ~~~~~~~^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'D:\\GPT\\AI-demo\\Master_Buddhism_Report_Pro.pptx'

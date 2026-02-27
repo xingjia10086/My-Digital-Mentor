@@ -2,9 +2,13 @@ import os
 import json
 import time
 import google.generativeai as genai
+from dotenv import load_dotenv
 
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
-PHOTO_DIR = r"D:\GPT\AI-demo\Buddhism-Photos"
+load_dotenv()
+
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PHOTO_DIR = os.path.join(BASE_DIR, "Buddhism-Photos")
 genai.configure(api_key=API_KEY)
 
 MASTER_PROMPT = """

@@ -2,9 +2,12 @@ import os
 import json
 import lark_oapi as lark
 from lark_oapi.api.im.v1 import *
+from dotenv import load_dotenv
 
-FEISHU_APP_ID = "cli_a91397ee08f81bdb"
-FEISHU_APP_SECRET = "J1FL9TPMD97NY8wu76FNGcZL4Y6PQ0AA"
+load_dotenv()
+
+FEISHU_APP_ID = os.environ.get("FEISHU_APP_ID", "")
+FEISHU_APP_SECRET = os.environ.get("FEISHU_APP_SECRET", "")
 
 lark_client = lark.Client.builder().app_id(FEISHU_APP_ID).app_secret(FEISHU_APP_SECRET).build()
 

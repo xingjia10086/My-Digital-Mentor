@@ -3,13 +3,18 @@ import json
 import time
 import google.generativeai as genai
 from PIL import Image
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
-PHOTO_DIR = r"D:\GPT\AI-demo\Buddhism-Photos"
-BRAIN_DIR = r"C:\Users\xingj\.gemini\antigravity\brain\06d1296e-0570-43ef-85ea-4e580e2f5b62"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PHOTO_DIR = os.path.join(BASE_DIR, "Buddhism-Photos")
+BRAIN_DIR = os.path.join(BASE_DIR, "output")
+os.makedirs(BRAIN_DIR, exist_ok=True)
 ANALYSIS_FILE = os.path.join(BRAIN_DIR, "buddhism_analysis_final.json")
 PPT_OUTLINE_FILE = os.path.join(BRAIN_DIR, "buddhism_ppt_outline_final.md")
 

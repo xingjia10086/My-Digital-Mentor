@@ -1,12 +1,19 @@
 import os
 import json
 import google.generativeai as genai
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
-BRAIN_DIR = r"C:\Users\xingj\.gemini\antigravity\brain\06d1296e-0570-43ef-85ea-4e580e2f5b62"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Note: BRAIN_DIR might be specific to the run, but we will keep it as is if it's external, or use relative if meant to be local.
+# The original code used a hardcoded path. If we want it to run anywhere, we should probably output to the local dir or a specified dir.
+BRAIN_DIR = os.path.join(BASE_DIR, "output")
+os.makedirs(BRAIN_DIR, exist_ok=True)
 ANALYSIS_FILE = os.path.join(BRAIN_DIR, "buddhism_analysis_final.json")
 OUTLINE_FILE = os.path.join(BRAIN_DIR, "buddhism_ppt_outline_final.md")
 PPT_SCRIPT_FILE = os.path.join(BRAIN_DIR, "buddhism_ppt_script.json")

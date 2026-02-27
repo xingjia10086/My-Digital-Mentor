@@ -1,0 +1,115 @@
+# Stash 专用配置文件 - 俄勒冈桥接住宅 IP
+# 优化项：修复住宅节点超时、增强 iOS DNS 稳定性
+# 更新时间: 2026-02-18
+
+port: 7890
+socks-port: 7891
+mixed-port: 7893
+allow-lan: false
+mode: rule
+log-level: info
+ipv6: false
+
+# Stash 建议的 DNS 配置
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - localhost.ptlogin2.qq.com
+  default-nameserver:
+    - 223.5.5.5
+    - 114.114.114.114
+  nameserver:
+    - https://dns.google/dns-query
+    - https://cloudflare-dns.com/dns-query
+  fallback:
+    - https://dns.google/dns-query
+    - https://cloudflare-dns.com/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+
+proxies:
+  - name: "US-Oregon"
+    type: ss
+    server: 136.118.235.211
+    port: 8388
+    cipher: aes-256-gcm
+    password: "7eBeHGS8rRpEVceYqW14pA=="
+    udp: true
+
+  - name: "US-Residential"
+    type: socks5
+    server: 86.109.86.37
+    port: 12324
+    username: "14a86a544796b"
+    password: "e3c8d97c8a"
+    # [重要] 关闭住宅节点的 UDP，防止因为节点不支持 UDP 导致的连通性测试超时
+    udp: false
+    dialer-proxy: "US-Oregon"
+
+proxy-groups:
+  - name: Proxy
+    type: select
+    proxies:
+      - "US-Residential"
+      - "US-Oregon"
+      - DIRECT
+
+  - name: Bank
+    type: select
+    proxies:
+      - "US-Residential"
+  
+  - name: AI
+    type: select
+    proxies:
+      - "US-Residential"
+      - "US-Oregon"
+
+  - name: Direct
+    type: select
+    proxies:
+      - DIRECT
+
+rules:
+  # 银行规则
+  - DOMAIN-SUFFIX,chase.com,Bank
+  - DOMAIN-SUFFIX,bankofamerica.com,Bank
+  - DOMAIN-SUFFIX,citi.com,Bank
+  - DOMAIN-SUFFIX,wellsfargo.com,Bank
+  - DOMAIN-SUFFIX,paypal.com,Bank
+  
+  # AI 规则
+  - DOMAIN-SUFFIX,openai.com,AI
+  - DOMAIN-SUFFIX,chatgpt.com,AI
+  - DOMAIN-SUFFIX,claude.ai,AI
+  - DOMAIN-SUFFIX,anthropic.com,AI
+  - DOMAIN-SUFFIX,gemini.google.com,AI
+  
+  # 代理规则
+  - DOMAIN-SUFFIX,google.com,Proxy
+  - DOMAIN-SUFFIX,googleapis.com,Proxy
+  - DOMAIN-SUFFIX,gstatic.com,Proxy
+  - DOMAIN-SUFFIX,youtube.com,Proxy
+  - DOMAIN-SUFFIX,googlevideo.com,Proxy
+  - DOMAIN-SUFFIX,twitter.com,Proxy
+  - DOMAIN-SUFFIX,x.com,Proxy
+  - DOMAIN-SUFFIX,github.com,Proxy
+  - DOMAIN-SUFFIX,telegram.org,Proxy
+  
+  # 直连规则
+  - DOMAIN-SUFFIX,cn,Direct
+  - DOMAIN-SUFFIX,baidu.com,Direct
+  - DOMAIN-SUFFIX,zhihu.com,Direct
+  - DOMAIN-SUFFIX,taobao.com,Direct
+  - DOMAIN-SUFFIX,qq.com,Direct
+  
+  - GEOIP,CN,Direct
+  - MATCH,Proxy

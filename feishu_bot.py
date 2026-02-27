@@ -4,6 +4,7 @@ import re
 import logging
 import threading
 import feedparser
+from dotenv import load_dotenv
 import lark_oapi as lark
 from lark_oapi.api.im.v1 import *
 from google import genai
@@ -12,15 +13,18 @@ from langchain_community.vectorstores import Chroma
 import vertexai
 from vertexai.preview.vision_models import ImageGenerationModel
 
-# --- Configuration ---
-FEISHU_APP_ID = "cli_a91397ee08f81bdb"
-FEISHU_APP_SECRET = "J1FL9TPMD97NY8wu76FNGcZL4Y6PQ0AA"
+load_dotenv()
 
-PROJECT_ID = "gen-lang-client-0834352502" 
-LOCATION = "us-central1"
-CHROMA_PERSIST_DIR = r"D:\GPT\AI-demo\chroma_db"
+# --- Configuration ---
+FEISHU_APP_ID = os.environ.get("FEISHU_APP_ID", "")
+FEISHU_APP_SECRET = os.environ.get("FEISHU_APP_SECRET", "")
+
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0834352502")
+LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
 EMBEDDING_MODEL = "text-embedding-004"
-API_KEY = "AIzaSyDuVkQKk3GH6MjS-bzIQgVkhSZ-utvwUBg"
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 
 MODEL_NAME = "gemini-2.5-pro"  
 
@@ -52,7 +56,7 @@ vectorstore = Chroma(
 chat_histories = {}
 MAX_HISTORY = 3
 
-CACHE_FILE = r"D:\GPT\AI-demo\feishu_processed.json"
+CACHE_FILE = os.path.join(BASE_DIR, "feishu_processed.json")
 if os.path.exists(CACHE_FILE):
     try:
         with open(CACHE_FILE, "r") as f:
