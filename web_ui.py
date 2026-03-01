@@ -122,7 +122,13 @@ def main():
         
     # Navigation (Move to top so UI shell always loads)
     st.sidebar.title("🌌 星佳的数字生态")
-    app_mode = st.sidebar.radio("选择功能模块", ["🧠 灵魂导师 (对话)", "✍️ 替身写作 (AI Writer)", "🤔 思想图谱 (Knowledge Graph)", "🐦 推特分发机 (Twitter Agent)"])
+    app_mode = st.sidebar.radio("选择功能模块", [
+        "🧠 灵魂导师 (对话)", 
+        "✍️ 替身写作 (AI Writer)", 
+        "🤔 思想图谱 (Knowledge Graph)", 
+        "🐦 推特分发机 (Twitter Agent)",
+        "⏳ 时光机 (Time Machine)"
+    ])
     st.sidebar.markdown("---")
 
     try:
@@ -172,6 +178,8 @@ def main():
         render_knowledge_graph(client, chosen_model, vectorstore)
     elif app_mode == "🐦 推特分发机 (Twitter Agent)":
         render_twitter_agent(client, chosen_model, vectorstore)
+    elif app_mode == "⏳ 时光机 (Time Machine)":
+        render_time_machine(client, chosen_model, vectorstore)
 
 # --- Feature 1: Chat Mentor ---
 def render_chat_mentor(client, chosen_model, vectorstore):
@@ -728,6 +736,108 @@ def render_twitter_agent(client, chosen_model, vectorstore):
                 
             except Exception as e:
                 st.error(f"生成失败：{e}")
+
+# --- Feature 5: Time Machine (Life Story Timeline) ---
+def render_time_machine(client, chosen_model, vectorstore):
+    st.title("⏳ 时光机 (Time Machine)")
+    st.markdown("从你过去的知识库库中抽取特定年份的记忆，用 AI 把它们串联成你的人生故事演化时间线。")
+    
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        year_options = ["五年总脉络 (涵盖所有年份)"] + [f"{y}年" for y in range(2025, 2018, -1)]
+        selected_year = st.selectbox("你想重温哪一段记忆？", year_options)
+    with col2:
+        st.markdown("<br>", unsafe_allow_html=True)
+        generate_btn = st.button("🚀 启动时光机", type="primary", use_container_width=True)
+
+    if generate_btn:
+        st.markdown("---")
+        result_placeholder = st.empty()
+        
+        with st.spinner("正在进入记忆宫殿打捞碎片..."):
+            try:
+                # Retrieve all documents to access metadatas
+                collection_data = vectorstore._collection.get()
+                all_docs = collection_data['documents']
+                all_metadatas = collection_data['metadatas']
+                
+                filtered_indices = []
+                target_year = ""
+                if "年" in selected_year and selected_year != "五年总脉络 (涵盖所有年份)":
+                    target_year = selected_year.replace("年", "")
+                    
+                # Filter indices according to the year in the source path
+                for i, meta in enumerate(all_metadatas):
+                    source_path = meta.get('source', '')
+                    # Both backslash and slash to cover OS differences 
+                    if not target_year or f"/{target_year}/" in source_path or f"\\{target_year}\\" in source_path:
+                        filtered_indices.append(i)
+
+                if not filtered_indices:
+                    st.warning(f"未能找到匹配【{selected_year}】特征的记忆切片。请换个年份试试！")
+                    return
+
+                # Sample subset to fit in prompts. Target ~50 chunks if specific year, ~100 if all years
+                sample_size = min(len(filtered_indices), 100 if not target_year else 50)
+                sampled_indices = random.sample(filtered_indices, sample_size)
+                
+                docs = []
+                for idx in sampled_indices:
+                    docs.append(Document(page_content=all_docs[idx], metadata=all_metadatas[idx]))
+                    
+                context_str = format_docs(docs)
+                sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
+                st.info(f"成功收集到 **{len(filtered_indices)}** 块该时期的记忆，已随机抽取 **{len(docs)}** 个核心切片进行深度分析。")
+                
+            except Exception as e:
+                st.error(f"提取记忆碎片时发生错误：{e}")
+                return
+
+        with st.spinner("AI 正在重构人生时间轴..."):
+            year_directive = f"这是你在 **{selected_year}** 这一年写下的各种文章碎片。" if target_year else "这是你过去几年里写下的各种文章碎片跨度合集。"
+            
+            prompt = f"""你是星佳本人的数字分身与个人传记作者。
+你的任务是根据提供的知识库文章碎片，梳理并重构出属于他的【人生故事时间线】。
+
+{year_directive}
+请你仔细阅读这些碎片，把隐藏在文字背后的：重大决定、职业/项目转折、关键心境变化、重要的人际相遇串联起来，以**时间为纵轴**输出。
+
+【输出要求】:
+1. **情感共鸣**：行文要像一部个人纪录片，既要陈述客观事实，又要揭示当时的内心独白。
+2. **结构清晰**：请用 Markdown 的列表和标题来展现时间轴。如果碎片里有提到具体月份或季节，请标注出来；如果没有，请按故事逻辑前后排序。
+3. **内容提炼**：每个时间节点包含：
+    - 🗓️ [时间段/月份]
+    - 📌 **[事件小标题]**
+    - 📝 [该阶段发生的核心故事与心境转变]
+    - 💡 [沉淀下来的底层认知/感悟]
+4. 在最后，请给一段【总体回顾与寄语】，以你的视角对这段人生经历做一个深刻的总结。
+
+【提取的文章碎片】:
+{context_str}
+
+请开始输出重构后的人生时间线："""
+
+            full_timeline = ""
+            try:
+                for chunk in client.models.generate_content_stream(model=chosen_model, contents=prompt):
+                    if chunk.text:
+                        full_timeline += chunk.text
+                        result_placeholder.markdown(full_timeline + " ▌")
+                
+                # Render clean final result without block cursor
+                full_timeline += "\n\n---\n*💡 上述故事编排参考了以下时期的文档记录（共 {} 篇）:*\n".format(len(sources))
+                # Only list first 15 to avoid clutter if too many
+                for src in sources[:15]:
+                    full_timeline += f"- 《{src}》\n"
+                if len(sources) > 15:
+                    full_timeline += f"- 以及其他 {len(sources) - 15} 份残片...\n"
+                    
+                result_placeholder.markdown(full_timeline)
+                st.balloons()
+                
+            except Exception as e:
+                st.error(f"时间线生成异常：{e}")
+
 
 if __name__ == "__main__":
     main()
