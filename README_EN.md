@@ -25,6 +25,14 @@ By feeding the system your own articles, journals, or research notes, it builds 
 
 ---
 
+## 🆕 Recent Updates
+
+**v1.1.0** (2026-03)
+- **Knowledge Graph Export Fix**: Completely fixed the bug where special symbols caused Mermaid rendering to crash.
+- **High-Res Graph Download**: You can now export and download the generated Knowledge Graph as a 3x High-Res PNG image with a premium dark gradient background, perfect for sharing on social platforms.
+
+---
+
 ## 🎯 Feature Showcase
 
 ### 🧠 AI Mentor (Soul Counselor)
