@@ -348,12 +348,19 @@ def render_knowledge_graph(client, chosen_model, vectorstore):
 你的任务是提取出代表作者最核心理念、思考模型、关注领域的 **30 个**关键词或短语，并构建一个高度关联的知识图谱。
 
 要求：
-1. **结构化**：使用 Mermaid `graph LR` (从左到右) 布局，这样在社交媒体长图上更好看。
+1. **结构化**：使用 Mermaid `graph LR` (从左到右) 布局。
 2. **美化**：利用 `subgraph` 将相关的词汇进行聚类（例如：家庭与资产、个人成长、AI与工具）。
-3. **节点分级**：最重要的 3-5 个核心词汇请使用 `节点ID((文字))` 这种双圈表示。
-4. **简洁**：只输出 Mermaid 代码，用 ```mermaid 前后缀包裹。绝对不要在文字中出现冒号、括号、中括号等特殊字符，除非你用双引号包裹它们。
-5. **社交属性**：连接线尽量带上说明（比如：A -- 促进 --> B）。
-6. **无损输出**：确保节点 ID 唯一，不要出现重复的节点定义。
+3. **节点分级**：最重要的 3-5 个核心词汇请使用 `节点ID(("文字"))` 这种双圈表示。
+4. **社交属性**：连接线带上说明，使用 `-->|说明文字|` 格式。
+5. **无损输出**：确保节点 ID 唯一，不要出现重复的节点定义。
+
+**关键语法规则（必须严格遵守，否则图谱会渲染失败）**：
+- 所有节点文字必须用英文双引号包裹，例如：`A["长期主义"]`、`B(("核心理念"))`
+- subgraph 标题必须用英文双引号包裹，例如：`subgraph "个人成长"`
+- 所有边的标签使用 `-->|标签|` 格式，标签内不要用引号
+- 禁止使用中文标点（如：（）【】：；，），统一使用英文标点
+- 禁止使用 $、&、# 这些特殊字符
+- 只输出 Mermaid 代码，用 ```mermaid 前后缀包裹
 
 【抽样材料】：
 {combined_text[:60000]}
@@ -372,27 +379,65 @@ Mermaid 图表代码："""
                 if match:
                     mermaid_code = match.group(1).strip()
                     
-                    # --- Defensive Cleaning: Fix common Mermaid syntax errors ---
-                    # 1. Fix unbalanced parentheses inside nodes (common LLM error like P((text)))
-                    # This regex finds patterns like ((text)) or (text) and ensures the content is safely quoted
-                    # Specifically fix the user's error: K3("(做出结果")) -> K3("做出结果")
-                    mermaid_code = re.sub(r'(\w+)\s*\(\s*["\']?\s*\((.*?)\)\s*["\']?\s*\)', r'\1("\2")', mermaid_code)
+                    # --- Robust Mermaid Sanitization ---
+                    def sanitize_mermaid_code(code):
+                        """Aggressively clean LLM-generated Mermaid to prevent syntax errors."""
+                        lines = code.split('\n')
+                        cleaned = []
+                        for line in lines:
+                            # 0. Replace Chinese punctuation with ASCII equivalents
+                            line = line.replace('（', '(').replace('）', ')').replace('【', '[').replace('】', ']')
+                            line = line.replace('：', ':').replace('；', ';').replace('，', ',').replace('“', '"').replace('”', '"')
+                            
+                            # 1. Handle subgraph titles: subgraph Title Text -> subgraph "Title Text"
+                            sg_match = re.match(r'^(\s*subgraph\s+)(?!")(.*?)$', line)
+                            if sg_match:
+                                prefix, title = sg_match.group(1), sg_match.group(2).strip()
+                                if title and not title.startswith('"'):
+                                    title = title.replace('"', "'")
+                                    line = f'{prefix}"{title}"'
+                            
+                            # 2. Fix double-circle nodes: ID((text)) - ensure text is quoted
+                            line = re.sub(
+                                r'(\b\w+)\(\((?!")([^)]+)\)\)',
+                                lambda m: f'{m.group(1)}(("{m.group(2).replace(chr(34), chr(39))}"))' , line
+                            )
+                            
+                            # 3. Fix regular nodes with special chars: ID[text] or ID(text)
+                            def quote_node(m):
+                                opener, content, closer = m.group(1), m.group(2), m.group(3)
+                                content = content.replace('"', "'")
+                                return f'{opener}"{content}"{closer}'
+                            
+                            # Quote content in [] and () brackets if it contains special chars and isn't already quoted
+                            line = re.sub(r'(\[)(?!")([^\]]*?[:()/\[\]&$#][^\]]*?)(\])', quote_node, line)
+                            line = re.sub(r'(\()(?!")([^()]*?[:\[\]&$#/][^()]*?)(\))', quote_node, line)
+                            
+                            # 4. Fix edge labels: -- text --> or -->|text| ensure safe
+                            def quote_edge_label(m):
+                                pre, label, post = m.group(1), m.group(2), m.group(3)
+                                label = label.replace('"', "'").replace('|', ' ')
+                                return f'{pre}"{label}"{post}'
+                            line = re.sub(r'(\|)([^|]+)(\|)', quote_edge_label, line)
+                            line = re.sub(r'(--\s*)([^-|>][^->]*?)\s*(-->)', quote_edge_label, line)
+                            
+                            # 5. Replace characters that break Mermaid even inside quotes
+                            line = line.replace('$', 'USD').replace('&', ' and ').replace('#', ' ')
+                            
+                            # 6. Clean up double-double quotes from multiple passes
+                            line = line.replace('""', '"')
+                            
+                            cleaned.append(line)
+                        return '\n'.join(cleaned)
                     
-                    # 2. General Quoting for nodes with special characters
-                    mermaid_code = re.sub(r'([\[\(])([^"\]\)]*?[:\(\)\[\]/][^"\]\)]*?)([\]\)])', r'\1"\2"\3', mermaid_code)
-                    
-                    # 3. Clean up any double-double quotes caused by multiple regex passes
-                    mermaid_code = mermaid_code.replace('""', '"')
-                    
-                    # 4. Remove characters that break Mermaid even inside quotes
-                    mermaid_code = mermaid_code.replace('$', 'USD').replace('&', ' and ')
+                    mermaid_code = sanitize_mermaid_code(mermaid_code)
                     
                     graph_placeholder.empty()
                     # 调试用：显示代码
                     with st.expander("🛠️ 查看图谱源代码 (调试用)"):
                         st.code(mermaid_code, language="mermaid")
                     
-                    # 注入精美样式
+                    # 注入精美样式 + 下载按钮
                     st.components.v1.html(
                         f'''
                         <style>
@@ -402,7 +447,7 @@ Mermaid 图表代码："""
                                 padding: 30px;
                                 border: 1px solid rgba(255,255,255,0.1);
                                 box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-                                font-family: "Inter", sans-serif;
+                                font-family: "Inter", "Microsoft YaHei", sans-serif;
                                 overflow: auto;
                             }}
                             .header {{
@@ -424,14 +469,14 @@ Mermaid 图表代码："""
                                 display: flex;
                                 justify-content: center;
                             }}
-                            /* Mermaid Node Styling Override */
                             .node rect, .node circle, .node polygon, .node path {{
                                 fill: rgba(56, 189, 248, 0.1) !important;
                                 stroke: #38bdf8 !important;
                                 stroke-width: 1.5px !important;
                             }}
-                            .node .label {{
+                            .node .label, .nodeLabel {{
                                 color: #e2e8f0 !important;
+                                fill: #e2e8f0 !important;
                                 font-weight: 500 !important;
                             }}
                             .edgePath .path {{
@@ -441,34 +486,170 @@ Mermaid 图表代码："""
                             .edgeLabel {{
                                 background-color: transparent !important;
                                 color: #94a3b8 !important;
+                                fill: #94a3b8 !important;
                                 font-size: 10px !important;
                             }}
+                            .cluster rect {{
+                                fill: rgba(255,255,255,0.05) !important;
+                                stroke: rgba(255,255,255,0.15) !important;
+                            }}
+                            .download-btn {{
+                                display: block;
+                                margin: 20px auto 0;
+                                padding: 12px 32px;
+                                background: linear-gradient(135deg, #38bdf8, #6366f1);
+                                color: #fff;
+                                border: none;
+                                border-radius: 12px;
+                                font-size: 16px;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+                            }}
+                            .download-btn:hover {{
+                                transform: translateY(-2px);
+                                box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+                            }}
                         </style>
-                        <div class="container">
-                            <div class="header">🌌 星佳思想演化图谱 · 2026 </div>
+                        <div class="container" id="graph-container">
+                            <div class="header">🌌 星佳思想演化图谱 · 2026</div>
                             <div class="mermaid">
                                 {mermaid_code}
                             </div>
                             <div class="footer">由 星佳数字生态 · 数字灵魂导师 驱动生成</div>
                         </div>
+                        <button class="download-btn" id="dlBtn" onclick="downloadGraph()">📥 下载图谱为高清图片</button>
                         <script type="module">
                             import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-                            mermaid.initialize({{ 
-                                startOnLoad: true, 
+                            mermaid.initialize({{
+                                startOnLoad: true,
                                 theme: 'dark',
+                                flowchart: {{ htmlLabels: false }},
                                 themeVariables: {{
                                     primaryColor: '#38bdf8',
-                                    primaryTextColor: '#fff',
+                                    primaryTextColor: '#e2e8f0',
                                     primaryBorderColor: '#38bdf8',
                                     lineColor: '#576574',
                                     secondaryColor: '#0061ff',
                                     tertiaryColor: '#fff',
-                                    fontSize: '14px'
+                                    fontSize: '14px',
+                                    fontFamily: '"Microsoft YaHei", "SimHei", "Inter", sans-serif'
                                 }}
                             }});
                         </script>
+                        <script>
+                            function downloadGraph() {{
+                                const btn = document.getElementById('dlBtn');
+                                const svgEl = document.querySelector('#graph-container svg');
+                                if (!svgEl) {{
+                                    alert('图谱尚未渲染完成，请稍后再试');
+                                    return;
+                                }}
+                                btn.textContent = '⏳ 正在生成高清图片...';
+                                btn.disabled = true;
+
+                                const clonedSvg = svgEl.cloneNode(true);
+                                const w = svgEl.viewBox.baseVal.width || svgEl.getBoundingClientRect().width;
+                                const h = svgEl.viewBox.baseVal.height || svgEl.getBoundingClientRect().height;
+                                clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                                clonedSvg.setAttribute('width', w);
+                                clonedSvg.setAttribute('height', h);
+
+                                // Inject styles into cloned SVG for standalone rendering
+                                const sty = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+                                sty.textContent = 'text,tspan{{font-family:"Microsoft YaHei","SimHei","Inter",sans-serif;fill:#e2e8f0}} '
+                                    + '.node rect,.node circle,.node polygon,.node path{{fill:rgba(56,189,248,0.12);stroke:#38bdf8;stroke-width:1.5px}} '
+                                    + '.edgePath .path{{stroke:rgba(255,255,255,0.25);stroke-width:1px}} '
+                                    + '.edgeLabel text{{fill:#94a3b8;font-size:10px}} '
+                                    + '.cluster rect{{fill:rgba(255,255,255,0.05);stroke:rgba(255,255,255,0.15)}}';
+                                clonedSvg.insertBefore(sty, clonedSvg.firstChild);
+
+                                const scale = 3;
+                                const padTop = 70, padBottom = 50, padX = 40;
+                                const canvasW = (w + padX * 2) * scale;
+                                const canvasH = (h + padTop + padBottom) * scale;
+
+                                // Serialize SVG to base64 data URL (avoids blob URL taint issues)
+                                const svgStr = new XMLSerializer().serializeToString(clonedSvg);
+                                const svgBase64 = btoa(unescape(encodeURIComponent(svgStr)));
+                                const dataUrl = 'data:image/svg+xml;base64,' + svgBase64;
+
+                                const canvas = document.createElement('canvas');
+                                canvas.width = canvasW;
+                                canvas.height = canvasH;
+                                const ctx = canvas.getContext('2d');
+
+                                // Draw dark gradient background
+                                const grad = ctx.createLinearGradient(0, 0, canvasW, canvasH);
+                                grad.addColorStop(0, '#0f172a');
+                                grad.addColorStop(1, '#1e293b');
+                                ctx.fillStyle = grad;
+                                ctx.fillRect(0, 0, canvasW, canvasH);
+
+                                // Header
+                                ctx.fillStyle = '#38bdf8';
+                                ctx.font = 'bold ' + (18 * scale) + 'px "Microsoft YaHei","Inter",sans-serif';
+                                ctx.textAlign = 'center';
+                                ctx.fillText('星佳思想演化图谱 · 2026', canvasW / 2, 42 * scale);
+
+                                const img = new Image();
+                                img.onload = function() {{
+                                    ctx.drawImage(img, padX * scale, padTop * scale, w * scale, h * scale);
+
+                                    // Footer
+                                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                                    ctx.font = (11 * scale) + 'px "Microsoft YaHei","Inter",sans-serif';
+                                    ctx.textAlign = 'right';
+                                    ctx.fillText('由 星佳数字生态 · 数字灵魂导师 驱动生成', canvasW - 30 * scale, canvasH - 15 * scale);
+
+                                    try {{
+                                        const pngUrl = canvas.toDataURL('image/png');
+                                        const a = document.createElement('a');
+                                        a.download = '星佳思想演化图谱_2026.png';
+                                        a.href = pngUrl;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                        btn.textContent = '✅ 下载成功！';
+                                    }} catch(e) {{
+                                        // PNG export failed (canvas tainted), fall back to SVG download
+                                        fallbackSvgDownload(svgStr, w, h);
+                                    }}
+                                    setTimeout(function(){{ btn.textContent='📥 下载图谱为高清图片'; btn.disabled=false; }}, 3000);
+                                }};
+                                img.onerror = function() {{
+                                    // Image load failed, fall back to SVG download
+                                    fallbackSvgDownload(svgStr, w, h);
+                                    setTimeout(function(){{ btn.textContent='📥 下载图谱为高清图片'; btn.disabled=false; }}, 3000);
+                                }};
+                                img.src = dataUrl;
+                            }}
+
+                            function fallbackSvgDownload(innerSvg, w, h) {{
+                                // Wrap the SVG with a dark background for standalone viewing
+                                const wrapper = '<svg xmlns="http://www.w3.org/2000/svg" width="' + (w+80) + '" height="' + (h+120) + '">'
+                                    + '<rect width="100%" height="100%" fill="#0f172a"/>'
+                                    + '<text x="' + ((w+80)/2) + '" y="45" text-anchor="middle" fill="#38bdf8" font-size="22" font-weight="bold" '
+                                    + 'font-family="Microsoft YaHei,SimHei,Inter,sans-serif">星佳思想演化图谱 · 2026</text>'
+                                    + '<g transform="translate(40,70)">' + innerSvg + '</g>'
+                                    + '<text x="' + (w+50) + '" y="' + (h+105) + '" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="12" '
+                                    + 'font-family="Microsoft YaHei,SimHei,Inter,sans-serif">由 星佳数字生态 · 数字灵魂导师 驱动生成</text>'
+                                    + '</svg>';
+                                const blob = new Blob([wrapper], {{type:'image/svg+xml;charset=utf-8'}});
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.download = '星佳思想演化图谱_2026.svg';
+                                a.href = url;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                setTimeout(function(){{ URL.revokeObjectURL(url); }}, 1000);
+                                document.getElementById('dlBtn').textContent = '✅ 已下载 SVG 格式';
+                            }}
+                        </script>
                         ''',
-                        height=800,
+                        height=850,
                         scrolling=True
                     )
                     st.success("图谱渲染完成！现在的视觉效果非常适合截图发送至社交平台。")
