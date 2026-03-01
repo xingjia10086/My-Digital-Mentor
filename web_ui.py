@@ -184,7 +184,7 @@ def main():
 # --- Feature 1: Chat Mentor ---
 def render_chat_mentor(client, chosen_model, vectorstore):
     st.title("🧠 星佳的数字导师")
-    st.markdown("汇聚五年思考结晶，可以在侧边栏开启语音播报。")
+    st.markdown("汇聚十年思考结晶，可以在侧边栏开启语音播报。")
     
     enable_voice = st.sidebar.checkbox("🔊 开启语音播报 (TTS)", value=False)
     if st.sidebar.button("🧹 清空对话记忆", use_container_width=True):
@@ -744,7 +744,8 @@ def render_time_machine(client, chosen_model, vectorstore):
     
     col1, col2 = st.columns([2, 1])
     with col1:
-        year_options = ["五年总脉络 (涵盖所有年份)"] + [f"{y}年" for y in range(2025, 2018, -1)]
+        # User uploaded articles from 2014 to 2026
+        year_options = ["十年总脉络 (涵盖所有年份)"] + [f"{y}年" for y in range(2026, 2013, -1)]
         selected_year = st.selectbox("你想重温哪一段记忆？", year_options)
     with col2:
         st.markdown("<br>", unsafe_allow_html=True)
@@ -763,7 +764,7 @@ def render_time_machine(client, chosen_model, vectorstore):
                 
                 filtered_indices = []
                 target_year = ""
-                if "年" in selected_year and selected_year != "五年总脉络 (涵盖所有年份)":
+                if "年" in selected_year and "总脉络" not in selected_year:
                     target_year = selected_year.replace("年", "")
                     
                 # Filter indices according to the year in the source path
@@ -793,7 +794,7 @@ def render_time_machine(client, chosen_model, vectorstore):
                 st.error(f"提取记忆碎片时发生错误：{e}")
                 return
 
-        with st.spinner("AI 正在重构人生时间轴..."):
+        with st.spinner("AI 正在重构人生时间轴与提炼分享海报..."):
             year_directive = f"这是你在 **{selected_year}** 这一年写下的各种文章碎片。" if target_year else "这是你过去几年里写下的各种文章碎片跨度合集。"
             
             prompt = f"""你是星佳本人的数字分身与个人传记作者。
@@ -803,14 +804,21 @@ def render_time_machine(client, chosen_model, vectorstore):
 请你仔细阅读这些碎片，把隐藏在文字背后的：重大决定、职业/项目转折、关键心境变化、重要的人际相遇串联起来，以**时间为纵轴**输出。
 
 【输出要求】:
-1. **情感共鸣**：行文要像一部个人纪录片，既要陈述客观事实，又要揭示当时的内心独白。
-2. **结构清晰**：请用 Markdown 的列表和标题来展现时间轴。如果碎片里有提到具体月份或季节，请标注出来；如果没有，请按故事逻辑前后排序。
+1. **年度定调与对比**：一开篇先给出一个四字或六字的【年度主题】（如：向内生长、系统破局）。接着用一段话描述“当时的你 vs 现在的你”的强烈对比与反差感。
+2. **结构清晰**：用 Markdown 的列表来展现时间轴。如果碎片里有提到具体月份或季节，请标注出来；如果没有，请按故事逻辑前后排序。为了增加情绪氛围，请在每个节点前加上合适的天气或情绪 Emoji（如 🌧️ 🌪️ ☀️）。
 3. **内容提炼**：每个时间节点包含：
     - 🗓️ [时间段/月份]
     - 📌 **[事件小标题]**
-    - 📝 [该阶段发生的核心故事与心境转变]
-    - 💡 [沉淀下来的底层认知/感悟]
-4. 在最后，请给一段【总体回顾与寄语】，以你的视角对这段人生经历做一个深刻的总结。
+    - 📝 [客观发生的故事与内心的情绪波动]
+    - 💡 [顿悟与底层认知]
+4. **【至关重要】海报 JSON 数据**：在文章的最后，你必须附带一个不可见的 JSON 块，用于前端生成高逼格分享海报。格式如下：
+```json
+{{
+    "theme": "你的四个字年度主题",
+    "gold_sentence": "从文中提取一句最扎心、最能引发共鸣的金句（不要太长，适合做海报主视觉）",
+    "color_tone": "dark_blue" // 根据整体情绪选择色调，只允许在 [dark_blue, dark_red, dark_green, dark_purple] 中选一个
+}}
+```
 
 【提取的文章碎片】:
 {context_str}
@@ -822,18 +830,177 @@ def render_time_machine(client, chosen_model, vectorstore):
                 for chunk in client.models.generate_content_stream(model=chosen_model, contents=prompt):
                     if chunk.text:
                         full_timeline += chunk.text
-                        result_placeholder.markdown(full_timeline + " ▌")
+                        # Don't show the JSON part to the user during streaming if possible
+                        display_text = full_timeline.split("```json")[0] 
+                        result_placeholder.markdown(display_text + " ▌")
                 
-                # Render clean final result without block cursor
-                full_timeline += "\n\n---\n*💡 上述故事编排参考了以下时期的文档记录（共 {} 篇）:*\n".format(len(sources))
-                # Only list first 15 to avoid clutter if too many
+                # Extract JSON and clean final text
+                json_data = None
+                display_text = full_timeline
+                json_match = re.search(r'```json\n(.*?)\n```', full_timeline, re.DOTALL)
+                if json_match:
+                    display_text = full_timeline.replace(json_match.group(0), "")
+                    try:
+                        import json
+                        json_data = json.loads(json_match.group(1).strip())
+                    except:
+                        json_data = None
+
+                display_text += "\n\n---\n*💡 上述故事编排参考了以下时期的文档记录（共 {} 篇）:*\n".format(len(sources))
                 for src in sources[:15]:
-                    full_timeline += f"- 《{src}》\n"
+                    display_text += f"- 《{src}》\n"
                 if len(sources) > 15:
-                    full_timeline += f"- 以及其他 {len(sources) - 15} 份残片...\n"
+                    display_text += f"- 以及其他 {len(sources) - 15} 份残片...\n"
                     
-                result_placeholder.markdown(full_timeline)
+                result_placeholder.markdown(display_text.strip())
                 st.balloons()
+                
+                # --- Poster Generation UI ---
+                if json_data and isinstance(json_data, dict):
+                    # Default values in case of missing keys
+                    theme = json_data.get("theme", "岁月留痕")
+                    gold_sentence = json_data.get("gold_sentence", "流水不争先，争的是滔滔不绝。")
+                    color_tone = json_data.get("color_tone", "dark_blue")
+                    
+                    bg_gradient = {
+                        "dark_blue": ["#0f172a", "#1e3a8a"],
+                        "dark_red": ["#2e0618", "#7f1d1d"],
+                        "dark_green": ["#061f14", "#064e3b"], 
+                        "dark_purple": ["#1a0b2e", "#4c1d95"]
+                    }.get(color_tone, ["#0f172a", "#1e3a8a"])
+
+                    poster_html = f'''
+                    <style>
+                        .poster-wrapper {{ display: flex; flex-direction: column; align-items: center; margin-top: 30px; }}
+                        .poster-preview {{
+                            width: 100%; max-width: 400px;
+                            background: linear-gradient(135deg, {bg_gradient[0]}, {bg_gradient[1]});
+                            border-radius: 20px; padding: 40px 30px;
+                            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+                            color: white; font-family: "Microsoft YaHei", "Inter", sans-serif;
+                            position: relative; overflow: hidden;
+                        }}
+                        .poster-preview::before {{
+                            content: '"'; position: absolute; top: 10px; left: 20px;
+                            font-size: 120px; color: rgba(255,255,255,0.05); font-family: serif;
+                        }}
+                        .p-year {{ font-size: 14px; opacity: 0.7; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }}
+                        .p-quote {{ font-size: 24px; font-weight: bold; line-height: 1.5; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }}
+                        .p-footer {{ display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }}
+                        .p-author {{ font-size: 12px; opacity: 0.8; line-height: 1.6; }}
+                        .p-theme {{ font-size: 16px; font-weight: bold; color: {bg_gradient[1]}; background: white; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }}
+                        .dl-btn {{
+                            margin-top: 20px; padding: 12px 30px; border-radius: 30px; border: none;
+                            background: white; color: #0f172a; font-weight: bold; font-size: 16px; cursor: pointer;
+                            transition: transform 0.2s; box-shadow: 0 10px 20px rgba(255,255,255,0.2);
+                        }}
+                        .dl-btn:hover {{ transform: scale(1.05); }}
+                    </style>
+                    <div class="poster-wrapper">
+                        <div class="poster-preview" id="posterNode">
+                            <div class="p-year">MY DIGITAL MENTOR</div>
+                            <div class="p-quote">{gold_sentence}</div>
+                            <div class="p-footer">
+                                <div class="p-author">
+                                    <div class="p-theme">#{theme}#</div><br/>
+                                    来自 星佳的数字生态<br/>
+                                    {selected_year} · 记忆切片提取
+                                </div>
+                                <div style="font-size: 30px; opacity: 0.9;">🌌</div>
+                            </div>
+                        </div>
+                        <button class="dl-btn" onclick="downloadPoster()">📥 专属社交海报下载</button>
+                        <script>
+                            function downloadPoster() {{
+                                const scale = 3; 
+                                const node = document.getElementById('posterNode');
+                                const rect = node.getBoundingClientRect();
+                                const canvas = document.createElement('canvas');
+                                canvas.width = rect.width * scale;
+                                canvas.height = rect.height * scale;
+                                const ctx = canvas.getContext('2d');
+                                
+                                // Draw background
+                                const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                                grad.addColorStop(0, '{bg_gradient[0]}');
+                                grad.addColorStop(1, '{bg_gradient[1]}');
+                                ctx.fillStyle = grad;
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                
+                                // Draw quote mark watermark
+                                ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                                ctx.font = `italic ${{120 * scale}}px serif`;
+                                ctx.fillText('"', 20 * scale, 100 * scale);
+                                
+                                // Draw text details
+                                const padX = 30 * scale, padY = 40 * scale;
+                                
+                                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                                ctx.font = `${{14 * scale}}px "Inter", "Microsoft YaHei", sans-serif`;
+                                ctx.letterSpacing = '4px';
+                                ctx.fillText('MY DIGITAL MENTOR', padX, padY + 14 * scale);
+                                
+                                // Draw Gold Sentence with line wrapping
+                                ctx.fillStyle = '#ffffff';
+                                ctx.font = `bold ${{24 * scale}}px "Microsoft YaHei", sans-serif`;
+                                const maxW = canvas.width - (padX * 2);
+                                const words = '{gold_sentence}'.split('');
+                                let line = '';
+                                let yOffset = padY + 60 * scale;
+                                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                                ctx.shadowBlur = 10 * scale;
+                                ctx.shadowOffsetY = 2 * scale;
+                                
+                                for(let n = 0; n < words.length; n++) {{
+                                    const testLine = line + words[n];
+                                    const metrics = ctx.measureText(testLine);
+                                    if (metrics.width > maxW && n > 0) {{
+                                        ctx.fillText(line, padX, yOffset);
+                                        line = words[n];
+                                        yOffset += 36 * scale;
+                                    }} else {{ line = testLine; }}
+                                }}
+                                ctx.fillText(line, padX, yOffset);
+                                ctx.shadowColor = 'transparent'; // reset
+                                
+                                // Footer Line
+                                const footerY = canvas.height - 100 * scale;
+                                ctx.beginPath();
+                                ctx.moveTo(padX, footerY);
+                                ctx.lineTo(canvas.width - padX, footerY);
+                                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                                ctx.lineWidth = 1 * scale;
+                                ctx.stroke();
+                                
+                                // Theme Tag
+                                ctx.fillStyle = '#ffffff';
+                                const tagY = footerY + 25 * scale;
+                                ctx.fillRect(padX, tagY, ctx.measureText('#{theme}#').width + 20*scale, 24*scale);
+                                ctx.fillStyle = '{bg_gradient[1]}';
+                                ctx.font = `bold ${{16 * scale}}px "Microsoft YaHei", sans-serif`;
+                                ctx.fillText('#{theme}#', padX + 10*scale, tagY + 18*scale);
+                                
+                                // Author details
+                                ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                                ctx.font = `${{12 * scale}}px "Microsoft YaHei", sans-serif`;
+                                ctx.fillText('来自 星佳的数字生态', padX, tagY + 45*scale);
+                                ctx.fillText('{selected_year} · 记忆切片提取', padX, tagY + 65*scale);
+                                
+                                // Emoji Icon
+                                ctx.fillText('🌌', canvas.width - padX - 30*scale, tagY + 50*scale);
+                                
+                                // Download trigger
+                                const a = document.createElement('a');
+                                a.download = '星佳时光机_{selected_year}_海报.png';
+                                a.href = canvas.toDataURL('image/png');
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            }}
+                        </script>
+                    </div>
+                    '''
+                    st.components.v1.html(poster_html, height=500, scrolling=False)
                 
             except Exception as e:
                 st.error(f"时间线生成异常：{e}")

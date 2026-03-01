@@ -5,56 +5,52 @@
 <h1 align="center">🌌 My Digital Mentor</h1>
 
 <p align="center">
-  <b>A Full-Stack Personal AI Ecosystem Powered by Local RAG + Google Gemini</b>
+  <b>Your Personal AI Ecosystem & Thought Inheritance Engine Powered by RAG + Google Gemini</b>
 </p>
 
 <p align="center">
-  <a href="README.md"><img src="https://img.shields.io/badge/中文文档-E53935?style=for-the-badge&logo=translate&logoColor=white" alt="Chinese Version"/></a>
-  <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
+  <a href="#-core-features"><img src="https://img.shields.io/badge/Features-2979FF?style=for-the-badge&logo=eye&logoColor=white" alt="Features"/></a>
+  <a href="README.md"><img src="https://img.shields.io/badge/中文版-FF6F00?style=for-the-badge&logo=translate&logoColor=white" alt="Chinese Version"/></a>
 </p>
 
 ---
 
-## 💡 What Is This?
+## 💡 Why Do You Need It?
 
-This is a full-stack AI system that **perfectly revives your thinking patterns**.
+This is not just another wrapper for a chatbot. It is a full-stack AI ecosystem capable of **perfectly reviving and inheriting your train of thought**.
 
-By feeding the system your own articles, journals, or research notes, it builds a "Second Brain" that belongs to you — providing a 24/7 virtual mentor, automatic tweet generation, and powerful knowledge graph extraction.
+By feeding your own articles, diaries, and research notes into the system, it automatically builds your "Second Brain". It then acts as your 24/7 virtual mentor, automated tweeting agent, thought graph extractor, and an emotionally impactful Time Machine to review your memories.
 
-> *"Pour thousands of your past articles into AI's brain and let it learn to speak, write, and even tweet in your own voice."*
-
----
-
-## 🆕 Recent Updates
-
-**v1.1.0** (2026-03)
-- **Knowledge Graph Export Fix**: Completely fixed the bug where special symbols caused Mermaid rendering to crash.
-- **High-Res Graph Download**: You can now export and download the generated Knowledge Graph as a 3x High-Res PNG image with a premium dark gradient background, perfect for sharing on social platforms.
+> *"Feed thousands of articles you wrote over the past decade into the AI's brain, teaching it to speak in your tone, write like you, and even generate your annual memoir." —— 星佳的数字生态*
 
 ---
 
-## 🎯 Feature Showcase
+## 🆕 Recent Updates (v1.1)
 
-### 🧠 AI Mentor (Soul Counselor)
-Confide your troubles anytime. It responds with wisdom by cleverly referencing golden lines and paragraphs from your own past writings, with optional text-to-speech.
+- **[NEW] ⏳ Time Machine Released**: Supports extracting your memory fragments from the past 10 years (2014-2026), letting AI automatically generate your thrilling **"Decade of Thought Evolution Memoir"**.
+- **[NEW] 🔥 High-End Social Poster Engine**: Whether it's a knowledge graph or a Time Machine memory, it now renders **3x High-Res social posters** directly in the frontend, complete with dark gradient backgrounds and geeky watermarks for easy sharing to X (Twitter) or WeChat moments.
+- **[FIX] Model Failover Protection**: Comprehensively optimized the backend Gemini model dispatch logic, seamlessly switching to the latest APIs to guarantee system stability (fallback from locked `gemini-2.0-flash` to `gemini-2.5-pro`).
+
+---
+
+## 🎯 Core Features
+
+### ⏳ Time Machine & Annual Memoir
+Accurately salvage specific memory fragments from your decade-long knowledge base! The AI acts as your private biographer, using stark contrasts (*"You Then vs. You Now"*) to connect your major decisions and mindset shifts, picking out a **Four-Word Annual Theme** and the most **piercing golden quotes**. Finally, generate a visually striking social sharing poster with one click.
 
 <p align="center">
-  <img src="docs/images/ai_mentor.png" width="700" alt="AI Mentor"/>
+  <b>👇 [Insert New Time Machine Poster Screenshot Here] 👇</b>
+  <br>
+  <img src="docs/images/time_machine_placeholder.png" width="700" alt="Time Machine Poster Placeholder"/>
+  <br>
+  <i>(Recommendation: Upload a Time Machine golden quote poster with a gradient background here)</i>
 </p>
 
 ---
 
-### ✍️ AI Writer (Ghost Writer)
-Generates 1500+ word long-form articles that perfectly mimic **your writing style**. The system retrieves relevant historical articles from your knowledge base and deeply learns your voice before creating original content.
-
-<p align="center">
-  <img src="docs/images/ai_writer.png" width="700" alt="AI Writer"/>
-</p>
-
----
-
-### 🤔 Knowledge Graph
-Automatically samples from your article archive to extract and visualize your core belief network as a stunning, shareable mind map.
+### 🤔 Thought Evolution Graph (Knowledge Graph)
+No more linear reading! The system automatically samples materials from your historical article base, extracts the interconnected models of your core concepts, and draws a massive mind map for you via Mermaid frontend. Click download to get a perfect, high-res knowledge graph.
 
 <p align="center">
   <img src="docs/images/knowledge_graph.png" width="700" alt="Knowledge Graph"/>
@@ -62,8 +58,17 @@ Automatically samples from your article archive to extract and visualize your co
 
 ---
 
-### 🐦 Twitter Agent
-Randomly digs up gems from your subconscious fragment library, rewrites them as compelling bilingual tweets (Chinese + English), with an AI image prompt attached.
+### 🧠 AI Mentor
+Consult "yourself" whenever you're confused. It won't just answer; it will cleverly quote real experiences and insights you wrote over the past 10 years to enlighten you, granting you an epiphany across time (with real-time optional Azure Text-to-Speech).
+
+<p align="center">
+  <img src="docs/images/ai_mentor.png" width="700" alt="AI Mentor"/>
+</p>
+
+---
+
+### ✍️ AI Writer & 🐦 Twitter Agent
+Instantly draft 1000-word articles perfectly imitating "your penmanship", or distill your subconscious musings into penetrating bilingual short tweets (English-Chinese parallel), complete with perfect Midjourney AI illustration Prompts at the end!
 
 <p align="center">
   <img src="docs/images/twitter_agent.png" width="700" alt="Twitter Agent"/>
@@ -71,78 +76,80 @@ Randomly digs up gems from your subconscious fragment library, rewrites them as 
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Local Deployment)
 
-### 1️⃣ Prerequisites
-Make sure you have **Python 3.10+** installed. Then:
+### 1️⃣ Environment Preparation
+
+> ⚠️ **Prerequisites**: Ensure you have [Python 3.10+](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads) installed.
+
+Open your terminal (PowerShell for Windows / Terminal for Mac) and run:
 
 ```bash
+# Clone the project locally
 git clone https://github.com/xingjia10086/My-Digital-Mentor.git
 cd My-Digital-Mentor
+
+# Install all dependencies
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Configure API Keys
+### 2️⃣ Soul Injection: API Key Configuration
 
-Find `.env.example` in the project root, **copy and rename it to `.env`**, then fill in your keys:
+First, copy the environment variable template:
 
-| Variable | Purpose | How to Get |
-|---|---|---|
-| `GOOGLE_API_KEY` | 🧠 Core AI Engine | [Google AI Studio](https://aistudio.google.com/app/apikey) (Free) |
-| `GCP_PROJECT_ID` | Vector Embedding Service | [Google Cloud Console](https://console.cloud.google.com/) |
-| `APP_PASSWORD` | Login Password | Set any password you like |
-| `FEISHU_APP_ID` / `SECRET` | Feishu Push (Optional) | [Feishu Open Platform](https://open.feishu.cn/) |
-| `TWITTER_API_KEY` etc. | Auto Tweet (Optional) | [Twitter Developer](https://developer.twitter.com/) |
+```bash
+# Windows
+copy .env.example .env
 
-> 💡 **Minimum Requirement**: Only `GOOGLE_API_KEY` and `GCP_PROJECT_ID` are needed to run AI Mentor, Writer, and Knowledge Graph.
+# Mac / Linux
+cp .env.example .env
+```
 
-### 3️⃣ Build Your AI Brain
+Open `.env` with a text editor and fill in your **two core keys**:
 
-Place your articles (`.txt`, `.md` format) into the `公众号/` or `gongzhonghao/` folder, then run:
+| Variable | Required | Purpose | How to get |
+|---|:---:|---|---|
+| `GOOGLE_API_KEY` | ✅ Yes | Drives the LLM ecosystem | Claim for free on [Google AI Studio](https://aistudio.google.com/app/apikey) |
+| `GCP_PROJECT_ID` | ✅ Yes | Used by Vertex AI for embeddings | Copy any project ID from [Google Cloud Console](https://console.cloud.google.com/) |
+| `APP_PASSWORD` | ✅ Yes | Web UI access password | Set anything (e.g., `123456`) to protect your data |
+
+### 3️⃣ Train Your "Second Brain"
+
+Drop your article data (`.txt`, `.md`, categorized by year if possible) into the `gongzhonghao/` directory.
+
+Then, execute this command once to ingest knowledge (supports seamless incremental scans, no repetitive calculation):
 
 ```bash
 python rag_ingest.py
 ```
+*(Thousands of articles will be chunked, vectorized via ChromaDB, and saved locally within minutes)*
 
-### 4️⃣ Launch
+### 4️⃣ Launch Web Dashboard 🎉
+
+All set! Just run:
 
 ```bash
 streamlit run web_ui.py
 ```
-
-Open `http://localhost:8501` in your browser and start enjoying your personal digital ecosystem!
+Open your browser at `http://localhost:8501` to enjoy your private AI matrix!
 
 ---
 
-## 📁 Project Structure
+## 📁 Core Architecture
 
 ```
 My-Digital-Mentor/
-├── web_ui.py              # 🌐 Main Web UI (Streamlit)
-├── rag_ingest.py          # 📥 Knowledge Base Builder
-├── daily_push.py          # 📤 Scheduled Feishu Quote Push
-├── feishu_bot.py          # 🤖 Feishu Smart News Bot
-├── twitter_auto_agent.py  # 🐦 Automated Twitter Publisher
-├── .env.example           # 🔑 Environment Variables Template
-├── requirements.txt       # 📦 Dependencies
-├── 公众号/                # 📚 Sample Article Data
-└── gongzhonghao/          # 📚 More Sample Articles
+├── web_ui.py              # 🌌 [Core entry] Houses interaction logic for all 4 modules & poster rendering
+├── rag_ingest.py          # 📥 [Incremental engine] Rapidly builds local vector database
+├── test_system.py         # 🔍 [Debug probe] Auto-tests system environment and API connectivity
+├── chroma_db/             # 🧠 (System-generated) Your native vector memory palace
+├── .env.example           # 🔑 Environment config template
+└── gongzhonghao/          # 📚 Local textual data pool
 ```
 
----
-
-## ⚠️ Security
-
-- 🔒 All secrets managed via `.env` — **never tracked by Git**
-- 🛡️ Robust `.gitignore` blocks `.env`, `chroma_db/`, and other sensitive files
-- ⚡ Built-in API Key recovery panel: graceful error handling instead of crashes
-
-> **⚠️ NEVER push your `.env` file to any public repository!**
+## ⚠️ Security & Privacy Statement
+- 🛡️ **Absolute Localization**: Uses local ChromaDB. Apart from the unavoidable LLM generation API calls, your original articles and private data are NEVER uploaded to public cloud storage.
+- 🤫 **Anti-leak Mechanism**: Incorporates strict `.gitignore` rules to block `.env` and `chroma_db/` directories from accidental GitHub uploads.
 
 ---
-
-## 🤝 License
-
-MIT License · Star ⭐ · Fork 🍴 · PRs Welcome 🎉
-
-*Powered by Google Gemini & LangChain & ChromaDB*
+*Created by [星佳的数字生态](https://github.com/xingjia10086)*
