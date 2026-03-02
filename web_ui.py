@@ -5,9 +5,11 @@ import random
 import streamlit as st
 from dotenv import load_dotenv
 from google import genai
-from langchain_google_vertexai import VertexAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
+from typing import List, Dict, Any
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 # Override loaded variables if environment variables already exist
 load_dotenv(override=True)
@@ -19,7 +21,7 @@ LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
 # Automatically use relative path
 CHROMA_PERSIST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chroma_db")
 
-EMBEDDING_MODEL = "text-embedding-004"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 MAX_HISTORY = 3
 TEMP_AUDIO_FILE = "web_voice.mp3"
@@ -35,30 +37,46 @@ st.set_page_config(
 # --- Initialize Clients ---
 @st.cache_resource
 def get_clients():
-    client = genai.Client(api_key=API_KEY)
+    # Force use of API key-only client to avoid Google Cloud ADC requirement
+    client = genai.Client(api_key=API_KEY, http_options={'api_version': 'v1alpha'})
     
     available = []
     for m in client.models.list():
         if 'gemini' in m.name.lower() and 'generate' in str(getattr(m, 'supported_actions', '')).lower():
             available.append(m.name)
             
-    chosen_model = "gemini-2.0-flash" 
-    for preferred in ["gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-pro"]:
+    chosen_model = available[0] if available else "models/gemini-1.5-pro-latest"
+    for preferred in ["gemini-2.5-pro", "gemini-1.5-pro", "gemini-1.5-flash"]:
         for a in available:
             if preferred in a:
                 chosen_model = a
                 break
-        if chosen_model != "gemini-2.0-flash":
+        if chosen_model != available[0]: # Found a preferred model
             break
             
-    # --- 最终修复：VM 的 access scopes 已修正为 cloud-platform，恢复使用原生的 Vertex AI Embeddings ---
-    from langchain_google_vertexai import VertexAIEmbeddings
-    embeddings = VertexAIEmbeddings(model_name=EMBEDDING_MODEL, project=PROJECT_ID, location=LOCATION)
+    # --- 最终修复：使用 GoogleGenerativeAIEmbeddings 以便直接使用 API_KEY ---
+    from langchain_google_genai import GoogleGenerativeAIEmbeddings
+    embeddings = GoogleGenerativeAIEmbeddings(model=EMBEDDING_MODEL, google_api_key=API_KEY)
 
     vectorstore = Chroma(persist_directory=CHROMA_PERSIST_DIR, embedding_function=embeddings, collection_name="wechat_articles")
     retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
     
     return client, chosen_model, retriever, vectorstore
+
+# --- Network Resilience Helpers ---
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+def resilient_retrieve(retriever, query: str):
+    """Wrapper for ChromaDB retrieval to handle temporary network/SSL drops."""
+    return retriever.invoke(query)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+def resilient_generate_stream(client, model: str, contents: str):
+    """Wrapper for Gemini generation stream to handle temporary network/SSL drops."""
+    # Since streaming returns an iterator, we yield from it. If the connection breaks mid-stream,
+    # the retry logic will re-execute the *entire* function, meaning text might be duplicated.
+    # For UI robustness, it's often safer to just buffer or let the UI handle partials.
+    # However, for the initial connection drop (which SSL EOF usually is), this prevents the crash.
+    return client.models.generate_content_stream(model=model, contents=contents)
 
 # --- Helper Functions ---
 def format_docs(docs, for_writer=False):
@@ -92,9 +110,11 @@ def check_password():
     """Returns `True` if the user had the correct password."""
     def password_entered():
         expected_password = os.environ.get("APP_PASSWORD", "")
-        if st.session_state["password"] == expected_password: 
+        entered = st.session_state.get("password", "")
+        if entered == expected_password: 
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # don't store password
+            if "password" in st.session_state:
+                del st.session_state["password"]  # don't store password
         else:
             st.session_state["password_correct"] = False
 
@@ -127,7 +147,10 @@ def main():
         "✍️ 替身写作 (AI Writer)", 
         "🤔 思想图谱 (Knowledge Graph)", 
         "🐦 推特分发机 (Twitter Agent)",
-        "⏳ 时光机 (Time Machine)"
+        "🕰️ 思想时光机 (Time Machine)",
+        "📚 个人数字出版局 (Auto-Publisher)",
+        "⚔️ 认知对抗教练 (Cognitive Challenger)",
+        "🎙️ AI播客生成器 (Podcast Generator)"
     ])
     st.sidebar.markdown("---")
 
@@ -178,13 +201,19 @@ def main():
         render_knowledge_graph(client, chosen_model, vectorstore)
     elif app_mode == "🐦 推特分发机 (Twitter Agent)":
         render_twitter_agent(client, chosen_model, vectorstore)
-    elif app_mode == "⏳ 时光机 (Time Machine)":
+    elif app_mode == "🕰️ 思想时光机 (Time Machine)":
         render_time_machine(client, chosen_model, vectorstore)
+    elif app_mode == "📚 个人数字出版局 (Auto-Publisher)":
+        render_auto_publisher(client, chosen_model, vectorstore)
+    elif app_mode == "⚔️ 认知对抗教练 (Cognitive Challenger)":
+        render_cognitive_challenger(client, chosen_model, vectorstore)
+    elif app_mode == "🎙️ AI播客生成器 (Podcast Generator)":
+        render_podcast_generator(client, chosen_model, vectorstore)
 
 # --- Feature 1: Chat Mentor ---
 def render_chat_mentor(client, chosen_model, vectorstore):
     st.title("🧠 星佳的数字导师")
-    st.markdown("汇聚十年思考结晶，可以在侧边栏开启语音播报。")
+    st.markdown("汇聚五年思考结晶，可以在侧边栏开启语音播报。")
     
     enable_voice = st.sidebar.checkbox("🔊 开启语音播报 (TTS)", value=False)
     if st.sidebar.button("🧹 清空对话记忆", use_container_width=True):
@@ -250,7 +279,8 @@ def render_chat_mentor(client, chosen_model, vectorstore):
             full_response = ""
             audio_path = None
             try:
-                for chunk in client.models.generate_content_stream(model=chosen_model, contents=sys_prompt):
+                stream = resilient_generate_stream(client, chosen_model, sys_prompt)
+                for chunk in stream:
                     if chunk.text:
                         full_response += chunk.text
                         message_placeholder.markdown(full_response + "▌")
@@ -324,7 +354,8 @@ def render_ai_writer(client, chosen_model, vectorstore):
 开始创作吧："""
 
             try:
-                for chunk in client.models.generate_content_stream(model=chosen_model, contents=prompt):
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
                     if chunk.text:
                         full_article += chunk.text
                         result_placeholder.markdown(full_article + " ▌")
@@ -378,7 +409,8 @@ Mermaid 图表代码："""
             full_response = ""
             graph_placeholder = st.empty()
             try:
-                for chunk in client.models.generate_content_stream(model=chosen_model, contents=prompt):
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
                     if chunk.text:
                         full_response += chunk.text
                         graph_placeholder.markdown(full_response)
@@ -390,53 +422,59 @@ Mermaid 图表代码："""
                     # --- Robust Mermaid Sanitization ---
                     def sanitize_mermaid_code(code):
                         """Aggressively clean LLM-generated Mermaid to prevent syntax errors."""
-                        lines = code.split('\n')
-                        cleaned = []
-                        for line in lines:
-                            # 0. Replace Chinese punctuation with ASCII equivalents
+                        cleaned_lines = []
+                        for line in code.split('\n'):
+                            line = line.strip()
+                            if not line or line.startswith('%%'):
+                                cleaned_lines.append(line)
+                                continue
+                                
+                            # 1. Replace Chinese punctuation with ASCII equivalents globally
                             line = line.replace('（', '(').replace('）', ')').replace('【', '[').replace('】', ']')
                             line = line.replace('：', ':').replace('；', ';').replace('，', ',').replace('“', '"').replace('”', '"')
                             
-                            # 1. Handle subgraph titles: subgraph Title Text -> subgraph "Title Text"
-                            sg_match = re.match(r'^(\s*subgraph\s+)(?!")(.*?)$', line)
-                            if sg_match:
-                                prefix, title = sg_match.group(1), sg_match.group(2).strip()
-                                if title and not title.startswith('"'):
-                                    title = title.replace('"', "'")
-                                    line = f'{prefix}"{title}"'
+                            # Replace breaking chars like & and $ everywhere
+                            line = line.replace('$', 'USD').replace('&', ' and ')
+
+                            # 2. Fix subgraph titles (must quote if containing spaces or special chars)
+                            if line.startswith('subgraph '):
+                                title = line[9:].strip()
+                                # Only quote if not already quoted
+                                if not title.startswith('"') and not title.endswith('"'):
+                                     line = f'subgraph "{title}"'
+                                cleaned_lines.append(line)
+                                continue
+
+                            # 3. Clean up node definitions (ID[text], ID((text)), ID(text))
+                            # We just extract the text, strip any existing quotes/special chars, and wrap it cleanly
+                            def safe_node(match):
+                                opener, text, closer = match.group(1), match.group(2), match.group(3)
+                                # Strip all types of quotes to prevent nesting and syntax break
+                                text = text.replace('"', '').replace("'", "").strip()
+                                return f'{opener}"{text}"{closer}'
+                                
+                            line = re.sub(r'(\[)([^\]]+)(\])', safe_node, line)
                             
-                            # 2. Fix double-circle nodes: ID((text)) - ensure text is quoted
-                            line = re.sub(
-                                r'(\b\w+)\(\((?!")([^)]+)\)\)',
-                                lambda m: f'{m.group(1)}(("{m.group(2).replace(chr(34), chr(39))}"))' , line
-                            )
+                            def safe_double_circle(match):
+                                text = match.group(1).replace('"', '').replace("'", "").strip()
+                                return f'(("{text}"))'
+                            line = re.sub(r'\(\((.+?)\)\)', safe_double_circle, line)
                             
-                            # 3. Fix regular nodes with special chars: ID[text] or ID(text)
-                            def quote_node(m):
-                                opener, content, closer = m.group(1), m.group(2), m.group(3)
-                                content = content.replace('"', "'")
-                                return f'{opener}"{content}"{closer}'
+                            def safe_single_circle(match):
+                                node_id, text = match.group(1), match.group(2)
+                                text = text.replace('"', '').replace("'", "").strip()
+                                return f'{node_id}("{text}")'
+                            line = re.sub(r'(\w+)\(([^()]+)\)', safe_single_circle, line)
+
+                            # 4. Clean Edge labels `-->|label|`
+                            def safe_edge(match):
+                                text = match.group(1).replace('"', '').replace("'", "").replace('|', ' ').strip()
+                                return f'|"{text}"|'
+                            line = re.sub(r'\|(.*?)\|', safe_edge, line)
                             
-                            # Quote content in [] and () brackets if it contains special chars and isn't already quoted
-                            line = re.sub(r'(\[)(?!")([^\]]*?[:()/\[\]&$#][^\]]*?)(\])', quote_node, line)
-                            line = re.sub(r'(\()(?!")([^()]*?[:\[\]&$#/][^()]*?)(\))', quote_node, line)
+                            cleaned_lines.append(line)
                             
-                            # 4. Fix edge labels: -- text --> or -->|text| ensure safe
-                            def quote_edge_label(m):
-                                pre, label, post = m.group(1), m.group(2), m.group(3)
-                                label = label.replace('"', "'").replace('|', ' ')
-                                return f'{pre}"{label}"{post}'
-                            line = re.sub(r'(\|)([^|]+)(\|)', quote_edge_label, line)
-                            line = re.sub(r'(--\s*)([^-|>][^->]*?)\s*(-->)', quote_edge_label, line)
-                            
-                            # 5. Replace characters that break Mermaid even inside quotes
-                            line = line.replace('$', 'USD').replace('&', ' and ').replace('#', ' ')
-                            
-                            # 6. Clean up double-double quotes from multiple passes
-                            line = line.replace('""', '"')
-                            
-                            cleaned.append(line)
-                        return '\n'.join(cleaned)
+                        return '\n'.join(cleaned_lines)
                     
                     mermaid_code = sanitize_mermaid_code(mermaid_code)
                     
@@ -686,7 +724,7 @@ def render_twitter_agent(client, chosen_model, vectorstore):
         with st.spinner("正在进入 1.8 万个记忆切片中打捞灵感..."):
             if topic.strip():
                 retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
-                docs = retriever.invoke(topic)
+                docs = resilient_retrieve(retriever, topic)
                 context_str = format_docs(docs)
                 sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
             else:
@@ -722,7 +760,8 @@ def render_twitter_agent(client, chosen_model, vectorstore):
 直接输出排版好的推文结果："""
 
             try:
-                for chunk in client.models.generate_content_stream(model=chosen_model, contents=prompt):
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
                     if chunk.text:
                         full_tweet += chunk.text
                         result_placeholder.markdown(full_tweet + " ▌")
@@ -737,274 +776,235 @@ def render_twitter_agent(client, chosen_model, vectorstore):
             except Exception as e:
                 st.error(f"生成失败：{e}")
 
-# --- Feature 5: Time Machine (Life Story Timeline) ---
+# --- Feature 5: Time Machine ---
 def render_time_machine(client, chosen_model, vectorstore):
-    st.title("⏳ 时光机 (Time Machine)")
-    st.markdown("从你过去的知识库库中抽取特定年份的记忆，用 AI 把它们串联成你的人生故事演化时间线。")
+    st.title("🕰️ 思想时光机 (Time Machine)")
+    st.markdown("穿越 12 年的思想轨迹，看看你在某个主题上的认知是如何随着时间演化的。")
     
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        # User uploaded articles from 2014 to 2026
-        year_options = ["十年总脉络 (涵盖所有年份)"] + [f"{y}年" for y in range(2026, 2013, -1)]
-        selected_year = st.selectbox("你想重温哪一段记忆？", year_options)
-    with col2:
-        st.markdown("<br>", unsafe_allow_html=True)
-        generate_btn = st.button("🚀 启动时光机", type="primary", use_container_width=True)
-
-    if generate_btn:
+    topic = st.text_input("你想回顾哪个主题？", placeholder="例如：创业、爱情、认知破局、比特币...")
+    generate_btn = st.button("🚀 启动时光机", type="primary")
+    
+    if generate_btn and topic.strip():
         st.markdown("---")
         result_placeholder = st.empty()
+        full_report = ""
         
-        with st.spinner("正在进入记忆宫殿打捞碎片..."):
-            try:
-                # Retrieve all documents to access metadatas
-                collection_data = vectorstore._collection.get()
-                all_docs = collection_data['documents']
-                all_metadatas = collection_data['metadatas']
-                
-                filtered_indices = []
-                target_year = ""
-                if "年" in selected_year and "总脉络" not in selected_year:
-                    target_year = selected_year.replace("年", "")
-                    
-                # Filter indices according to the year in the source path
-                for i, meta in enumerate(all_metadatas):
-                    source_path = meta.get('source', '')
-                    # Both backslash and slash to cover OS differences 
-                    if not target_year or f"/{target_year}/" in source_path or f"\\{target_year}\\" in source_path:
-                        filtered_indices.append(i)
-
-                if not filtered_indices:
-                    st.warning(f"未能找到匹配【{selected_year}】特征的记忆切片。请换个年份试试！")
-                    return
-
-                # Sample subset to fit in prompts. Target ~50 chunks if specific year, ~100 if all years
-                sample_size = min(len(filtered_indices), 100 if not target_year else 50)
-                sampled_indices = random.sample(filtered_indices, sample_size)
-                
-                docs = []
-                for idx in sampled_indices:
-                    docs.append(Document(page_content=all_docs[idx], metadata=all_metadatas[idx]))
-                    
-                context_str = format_docs(docs)
-                sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
-                st.info(f"成功收集到 **{len(filtered_indices)}** 块该时期的记忆，已随机抽取 **{len(docs)}** 个核心切片进行深度分析。")
-                
-            except Exception as e:
-                st.error(f"提取记忆碎片时发生错误：{e}")
-                return
-
-        with st.spinner("AI 正在重构人生时间轴与提炼分享海报..."):
-            year_directive = f"这是你在 **{selected_year}** 这一年写下的各种文章碎片。" if target_year else "这是你过去几年里写下的各种文章碎片跨度合集。"
+        with st.spinner(f"正在时空隧道中打捞关于「{topic}」的记忆碎片..."):
+            retriever = vectorstore.as_retriever(search_kwargs={"k": 15})
+            docs = resilient_retrieve(retriever, topic)
             
-            prompt = f"""你是星佳本人的数字分身与个人传记作者。
-你的任务是根据提供的知识库文章碎片，梳理并重构出属于他的【人生故事时间线】。
+            if not docs:
+                st.warning("知识库中没有找到关于该主题的记录。")
+                return
+                
+            docs = sorted(docs, key=lambda x: x.metadata.get('source_file', ''))
+            context_str = format_docs(docs)
+            sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
+            
+        with st.spinner("AI 正在编织你的思想演化史..."):
+            prompt = f"""你是星佳的“思想档案管理员”。
+请分析以下提取自星佳历年公众号文章（包含时间前缀的标题）的知识切片。
+你的任务是：梳理星佳在【{topic}】这个主题上的认知演化过程。
 
-{year_directive}
-请你仔细阅读这些碎片，把隐藏在文字背后的：重大决定、职业/项目转折、关键心境变化、重要的人际相遇串联起来，以**时间为纵轴**输出。
-
-【输出要求】:
-1. **年度定调与对比**：一开篇先给出一个四字或六字的【年度主题】（如：向内生长、系统破局）。接着用一段话描述“当时的你 vs 现在的你”的强烈对比与反差感。
-2. **结构清晰**：用 Markdown 的列表来展现时间轴。如果碎片里有提到具体月份或季节，请标注出来；如果没有，请按故事逻辑前后排序。为了增加情绪氛围，请在每个节点前加上合适的天气或情绪 Emoji（如 🌧️ 🌪️ ☀️）。
-3. **内容提炼**：每个时间节点包含：
-    - 🗓️ [时间段/月份]
-    - 📌 **[事件小标题]**
-    - 📝 [客观发生的故事与内心的情绪波动]
-    - 💡 [顿悟与底层认知]
-4. **【至关重要】海报 JSON 数据**：在文章的最后，你必须附带一个不可见的 JSON 块，用于前端生成高逼格分享海报。格式如下：
-```json
-{{
-    "theme": "你的四个字年度主题",
-    "gold_sentence": "从文中提取一句最扎心、最能引发共鸣的金句（不要太长，适合做海报主视觉）",
-    "color_tone": "dark_blue" // 根据整体情绪选择色调，只允许在 [dark_blue, dark_red, dark_green, dark_purple] 中选一个
-}}
-```
-
-【提取的文章碎片】:
+【档案切片】：
 {context_str}
 
-请开始输出重构后的人生时间线："""
+【输出格式要求】：
+1. **开篇定调**：用一段充满哲理的话总结星佳在【{topic}】上最大的思想转变。
+2. **编年史分析**：尝试从文章标题（通常包含年份/日期）或内容中提取时间线索。按时间跨度顺序列出不同阶段的关键认知。
+3. **金句萃取**：在每个阶段下，提炼1-2句当时的代表性观点或原话。
+4. **终局点评**：站在现在（2026年以后）的角度，评价这种思想演化的价值，给出升华的结语。
 
-            full_timeline = ""
+语气客观沉稳，带有一点岁月感。
+直接使用流式 Markdown 输出："""
             try:
-                for chunk in client.models.generate_content_stream(model=chosen_model, contents=prompt):
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
                     if chunk.text:
-                        full_timeline += chunk.text
-                        # Don't show the JSON part to the user during streaming if possible
-                        display_text = full_timeline.split("```json")[0] 
-                        result_placeholder.markdown(display_text + " ▌")
+                        full_report += chunk.text
+                        result_placeholder.markdown(full_report + " ▌")
                 
-                # Extract JSON and clean final text
-                json_data = None
-                display_text = full_timeline
-                json_match = re.search(r'```json\n(.*?)\n```', full_timeline, re.DOTALL)
-                if json_match:
-                    display_text = full_timeline.replace(json_match.group(0), "")
-                    try:
-                        import json
-                        json_data = json.loads(json_match.group(1).strip())
-                    except:
-                        json_data = None
-
-                display_text += "\n\n---\n*💡 上述故事编排参考了以下时期的文档记录（共 {} 篇）:*\n".format(len(sources))
-                for src in sources[:15]:
-                    display_text += f"- 《{src}》\n"
-                if len(sources) > 15:
-                    display_text += f"- 以及其他 {len(sources) - 15} 份残片...\n"
+                full_report += "\n\n---\n*💡 参阅的时空档案：*\n"
+                for src in sources:
+                    full_report += f"- 《{src}》\n"
                     
-                result_placeholder.markdown(display_text.strip())
-                st.balloons()
-                
-                # --- Poster Generation UI ---
-                if json_data and isinstance(json_data, dict):
-                    # Default values in case of missing keys
-                    theme = json_data.get("theme", "岁月留痕")
-                    gold_sentence = json_data.get("gold_sentence", "流水不争先，争的是滔滔不绝。")
-                    color_tone = json_data.get("color_tone", "dark_blue")
-                    
-                    bg_gradient = {
-                        "dark_blue": ["#0f172a", "#1e3a8a"],
-                        "dark_red": ["#2e0618", "#7f1d1d"],
-                        "dark_green": ["#061f14", "#064e3b"], 
-                        "dark_purple": ["#1a0b2e", "#4c1d95"]
-                    }.get(color_tone, ["#0f172a", "#1e3a8a"])
-
-                    poster_html = f'''
-                    <style>
-                        .poster-wrapper {{ display: flex; flex-direction: column; align-items: center; margin-top: 30px; }}
-                        .poster-preview {{
-                            width: 100%; max-width: 400px;
-                            background: linear-gradient(135deg, {bg_gradient[0]}, {bg_gradient[1]});
-                            border-radius: 20px; padding: 40px 30px;
-                            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
-                            color: white; font-family: "Microsoft YaHei", "Inter", sans-serif;
-                            position: relative; overflow: hidden;
-                        }}
-                        .poster-preview::before {{
-                            content: '"'; position: absolute; top: 10px; left: 20px;
-                            font-size: 120px; color: rgba(255,255,255,0.05); font-family: serif;
-                        }}
-                        .p-year {{ font-size: 14px; opacity: 0.7; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }}
-                        .p-quote {{ font-size: 24px; font-weight: bold; line-height: 1.5; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }}
-                        .p-footer {{ display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }}
-                        .p-author {{ font-size: 12px; opacity: 0.8; line-height: 1.6; }}
-                        .p-theme {{ font-size: 16px; font-weight: bold; color: {bg_gradient[1]}; background: white; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }}
-                        .dl-btn {{
-                            margin-top: 20px; padding: 12px 30px; border-radius: 30px; border: none;
-                            background: white; color: #0f172a; font-weight: bold; font-size: 16px; cursor: pointer;
-                            transition: transform 0.2s; box-shadow: 0 10px 20px rgba(255,255,255,0.2);
-                        }}
-                        .dl-btn:hover {{ transform: scale(1.05); }}
-                    </style>
-                    <div class="poster-wrapper">
-                        <div class="poster-preview" id="posterNode">
-                            <div class="p-year">MY DIGITAL MENTOR</div>
-                            <div class="p-quote">{gold_sentence}</div>
-                            <div class="p-footer">
-                                <div class="p-author">
-                                    <div class="p-theme">#{theme}#</div><br/>
-                                    来自 星佳的数字生态<br/>
-                                    {selected_year} · 记忆切片提取
-                                </div>
-                                <div style="font-size: 30px; opacity: 0.9;">🌌</div>
-                            </div>
-                        </div>
-                        <button class="dl-btn" onclick="downloadPoster()">📥 专属社交海报下载</button>
-                        <script>
-                            function downloadPoster() {{
-                                const scale = 3; 
-                                const node = document.getElementById('posterNode');
-                                const rect = node.getBoundingClientRect();
-                                const canvas = document.createElement('canvas');
-                                canvas.width = rect.width * scale;
-                                canvas.height = rect.height * scale;
-                                const ctx = canvas.getContext('2d');
-                                
-                                // Draw background
-                                const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                                grad.addColorStop(0, '{bg_gradient[0]}');
-                                grad.addColorStop(1, '{bg_gradient[1]}');
-                                ctx.fillStyle = grad;
-                                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                
-                                // Draw quote mark watermark
-                                ctx.fillStyle = 'rgba(255,255,255,0.05)';
-                                ctx.font = `italic ${{120 * scale}}px serif`;
-                                ctx.fillText('"', 20 * scale, 100 * scale);
-                                
-                                // Draw text details
-                                const padX = 30 * scale, padY = 40 * scale;
-                                
-                                ctx.fillStyle = 'rgba(255,255,255,0.7)';
-                                ctx.font = `${{14 * scale}}px "Inter", "Microsoft YaHei", sans-serif`;
-                                ctx.letterSpacing = '4px';
-                                ctx.fillText('MY DIGITAL MENTOR', padX, padY + 14 * scale);
-                                
-                                // Draw Gold Sentence with line wrapping
-                                ctx.fillStyle = '#ffffff';
-                                ctx.font = `bold ${{24 * scale}}px "Microsoft YaHei", sans-serif`;
-                                const maxW = canvas.width - (padX * 2);
-                                const words = '{gold_sentence}'.split('');
-                                let line = '';
-                                let yOffset = padY + 60 * scale;
-                                ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                                ctx.shadowBlur = 10 * scale;
-                                ctx.shadowOffsetY = 2 * scale;
-                                
-                                for(let n = 0; n < words.length; n++) {{
-                                    const testLine = line + words[n];
-                                    const metrics = ctx.measureText(testLine);
-                                    if (metrics.width > maxW && n > 0) {{
-                                        ctx.fillText(line, padX, yOffset);
-                                        line = words[n];
-                                        yOffset += 36 * scale;
-                                    }} else {{ line = testLine; }}
-                                }}
-                                ctx.fillText(line, padX, yOffset);
-                                ctx.shadowColor = 'transparent'; // reset
-                                
-                                // Footer Line
-                                const footerY = canvas.height - 100 * scale;
-                                ctx.beginPath();
-                                ctx.moveTo(padX, footerY);
-                                ctx.lineTo(canvas.width - padX, footerY);
-                                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                                ctx.lineWidth = 1 * scale;
-                                ctx.stroke();
-                                
-                                // Theme Tag
-                                ctx.fillStyle = '#ffffff';
-                                const tagY = footerY + 25 * scale;
-                                ctx.fillRect(padX, tagY, ctx.measureText('#{theme}#').width + 20*scale, 24*scale);
-                                ctx.fillStyle = '{bg_gradient[1]}';
-                                ctx.font = `bold ${{16 * scale}}px "Microsoft YaHei", sans-serif`;
-                                ctx.fillText('#{theme}#', padX + 10*scale, tagY + 18*scale);
-                                
-                                // Author details
-                                ctx.fillStyle = 'rgba(255,255,255,0.8)';
-                                ctx.font = `${{12 * scale}}px "Microsoft YaHei", sans-serif`;
-                                ctx.fillText('来自 星佳的数字生态', padX, tagY + 45*scale);
-                                ctx.fillText('{selected_year} · 记忆切片提取', padX, tagY + 65*scale);
-                                
-                                // Emoji Icon
-                                ctx.fillText('🌌', canvas.width - padX - 30*scale, tagY + 50*scale);
-                                
-                                // Download trigger
-                                const a = document.createElement('a');
-                                a.download = '星佳时光机_{selected_year}_海报.png';
-                                a.href = canvas.toDataURL('image/png');
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                            }}
-                        </script>
-                    </div>
-                    '''
-                    st.components.v1.html(poster_html, height=500, scrolling=False)
+                result_placeholder.markdown(full_report)
                 
             except Exception as e:
-                st.error(f"时间线生成异常：{e}")
+                st.error(f"时光机跃迁失败：{e}")
 
+# --- Feature 6: Auto-Publisher ---
+def render_auto_publisher(client, chosen_model, vectorstore):
+    st.title("📚 个人数字出版局 (Auto-Publisher)")
+    st.markdown("给出一个宏观大纲，AI 将化身你的个人丛书主编，从你 12 年的文字仓库中打捞素材，直接帮你拼成万字文章或长篇连载专栏。")
+    
+    topic = st.text_input("你想写一本什么书/长文？", placeholder="例如：《写给年轻人的 10 条成长心法》或《从 0 到 1 的商业笔记》")
+    generate_btn = st.button("🖨️ 开始组稿印制", type="primary")
+    
+    if generate_btn and topic.strip():
+        st.markdown("---")
+        result_placeholder = st.empty()
+        full_report = ""
+        
+        with st.spinner("主编正在书库中翻箱倒柜寻找相关章节素材..."):
+            retriever = vectorstore.as_retriever(search_kwargs={"k": 20})
+            docs = resilient_retrieve(retriever, topic)
+            
+            if not docs:
+                st.warning("书库中没有找到合适的素材。")
+                return
+                
+            context_str = format_docs(docs, for_writer=True)
+            sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
+            
+        with st.spinner("AI 主编正在疯狂码字中，这可能需要一两分钟..."):
+            prompt = f"""你是星佳的专属图书主编与代笔作家。
+星佳计划出版一部名为/主题为【{topic}】的文章或书籍，并把他的个人历史手稿库交给了你。
+
+【可用的历史手稿素材】：
+{context_str}
+
+【你的任务】：
+请你利用以上素材，为这本书/长文撰写一份结构化初稿。
+1. **生成精美的目录大纲**（分出至少 3-4 个章节）。
+2. **正文撰写**：在每个章节下，使用星佳的语气，将提取出的相关历史观点、轶事、经验串联成流畅的正文。
+3. **严格忠实**：正文中的核心观点必须且只能来源于上述素材，不能凭空替星佳捏造他没说过的话。
+4. **统一风格**：文笔要流畅、极简、富有洞察力。
+
+直接使用优美的 Markdown 格式输出全文初稿："""
+            try:
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
+                    if chunk.text:
+                        full_report += chunk.text
+                        result_placeholder.markdown(full_report + " ▌")
+                
+                full_report += "\n\n---\n*📚 本文素材采集自以下历史文稿：*\n"
+                for src in sources:
+                    full_report += f"- 《{src}》\n"
+                    
+                result_placeholder.markdown(full_report)
+                
+            except Exception as e:
+                st.error(f"出版失败：{e}")
+
+# --- Feature 7: Cognitive Challenger ---
+def render_cognitive_challenger(client, chosen_model, vectorstore):
+    st.title("⚔️ 认知对抗教练 (Cognitive Challenger)")
+    st.markdown("输入你现在的一个重要决定或想法，AI 将化身唱反调的“硬核教练”，用你过去写过的话来攻击、质问和挑战你现在的决定。")
+    
+    idea = st.text_area("你现在有什么重大决定或想法？", placeholder="例如：我准备和朋友合伙开个新公司，全职做自媒体...")
+    generate_btn = st.button("🥊 接受灵魂拷问", type="primary")
+    
+    if generate_btn and idea.strip():
+        st.markdown("---")
+        result_placeholder = st.empty()
+        full_report = ""
+        
+        with st.spinner("教练正在翻阅你的黑历史，寻找你的认知破绽..."):
+            retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
+            docs = resilient_retrieve(retriever, idea)
+            
+            if not docs:
+                st.warning("知识库中没有足够的相关历史可以对你构成挑战。")
+                return
+                
+            context_str = format_docs(docs)
+            sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
+            
+        with st.spinner("起猛了，过去的你正在暴打现在的你..."):
+            prompt = f"""你是星佳的“认知对抗教练”，一个言辞犀利、直击要害、喜欢唱反调的智者。
+星佳现在有一个决定/想法：【{idea}】。
+
+请你查阅他过去写过的这些历史手稿片段：
+【历史手稿】：
+{context_str}
+
+【你的任务】：
+你的目标是用过去的他，来挑战现在的他。
+1. **寻找矛盾**：如果在历史手稿中发现他曾经受过的教训、踩过的坑、或者立下的 Flag，毫不留情地指出来。
+2. **灵魂三问**：针对他现在的决定，提出 3 个极其尖锐的问题，逼迫他深度思考该决定的潜在风险。
+3. **最终忠告**：基于他的历史经验，给他一个最直接、最客观的忠告。
+
+语气要求：一针见血、不留情面、但在内心深处是为了他好。多用反问句，大量引用他自己曾说过的话（“你曾经明明在某篇文章里说过...”）。
+
+直接使用流式 Markdown 输出你的拷问："""
+            try:
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
+                    if chunk.text:
+                        full_report += chunk.text
+                        result_placeholder.markdown(full_report + " ▌")
+                
+                full_report += "\n\n---\n*🥊 你的教练参考了以下你的黑历史：*\n"
+                for src in sources:
+                    full_report += f"- 《{src}》\n"
+                    
+                result_placeholder.markdown(full_report)
+                
+            except Exception as e:
+                st.error(f"对抗训练失败：{e}")
+
+# --- Feature 8: AI Podcast Generator ---
+def render_podcast_generator(client, chosen_model, vectorstore):
+    st.title("🎙️ AI播客生成器 (Podcast Generator)")
+    st.markdown("将你枯燥的个人历史文章片段，重塑为一档高质量的对谈播客文字脚本。")
+    
+    topic = st.text_input("本期播客想聊点什么主题？", placeholder="例如：普通人的财富破局之道、2025年的人生规划...")
+    generate_btn = st.button("🎧 生成播客大纲与脚本", type="primary")
+    
+    if generate_btn and topic.strip():
+        st.markdown("---")
+        result_placeholder = st.empty()
+        full_report = ""
+        
+        with st.spinner("正在为播客搜集高分金句素材..."):
+            retriever = vectorstore.as_retriever(search_kwargs={"k": 12})
+            docs = resilient_retrieve(retriever, topic)
+            
+            if not docs:
+                st.warning("知识库中没有找到足够好的素材来支撑一期播客。")
+                return
+                
+            context_str = format_docs(docs)
+            sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
+            
+        with st.spinner("AI 编剧正在创作两人对谈剧本..."):
+            prompt = f"""你是星佳的首席播客编剧。
+星佳计划录制一期主题为【{topic}】的对谈类播客节目。
+请参阅以下星佳的历史写作碎片作为节目主轴：
+
+【节目素材库】：
+{context_str}
+
+【你的任务】：
+生成一份 10-15 分钟时长的中高端播客对谈文字脚本。
+- **人物设定**：
+  - “Host（主持人）”：一个充满好奇心、懂行、负责抛出犀利问题和引导节奏的搭档。
+  - “星佳（Guest）”：负责输出干货、讲述自己故事、分享洞见的主讲人。
+- **脚本内容**：
+  - 第一幕：引出话题，主持人用一个痛点或场景切入。
+  - 第二幕（核心）：基于素材库，将其中的核心观点自然地融入对话中，多用口语化、讲故事的方式呈现。
+  - 第三幕：主持人总结，星佳给出给听众的最后一句金玉良言。
+
+要求：不要死板的读文章，把它改成生动的“机锋对聊”，甚至两人偶尔可以有友善的争辩。口语感要强！
+
+直接输出排版好的播客脚本："""
+            try:
+                stream = resilient_generate_stream(client, chosen_model, prompt)
+                for chunk in stream:
+                    if chunk.text:
+                        full_report += chunk.text
+                        result_placeholder.markdown(full_report + " ▌")
+                
+                full_report += "\n\n---\n*🎧 本期播客脚本致敬以下文章：*\n"
+                for src in sources:
+                    full_report += f"- 《{src}》\n"
+                    
+                result_placeholder.markdown(full_report)
+                
+            except Exception as e:
+                st.error(f"播客编排失败：{e}")
 
 if __name__ == "__main__":
     main()
