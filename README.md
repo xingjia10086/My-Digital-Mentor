@@ -1,57 +1,99 @@
 <p align="center">
-  <img src="docs/images/ai_mentor.png" width="600" alt="AI Mentor Preview"/>
+  <img src="docs/images/main_dashboard.png" width="700" alt="My Digital Mentor Dashboard"/>
 </p>
 
 <h1 align="center">🌌 My Digital Mentor · 我的数字导师</h1>
 
 <p align="center">
-  <b>基于本地知识库 (RAG) + Google Gemini 的个人数字生态系统与思想传承引擎</b><br/>
+  <b>基于本地知识库 (RAG) + Google Gemini 大模型的全能个人数字生态系统</b><br/>
   <i>Your Personal AI Ecosystem Powered by RAG + Google Gemini</i>
 </p>
 
 <p align="center">
   <a href="#-快速上手"><img src="https://img.shields.io/badge/快速上手-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
-  <a href="#-核心功能"><img src="https://img.shields.io/badge/功能预览-2979FF?style=for-the-badge&logo=eye&logoColor=white" alt="Features"/></a>
+  <a href="#-八大核心功能"><img src="https://img.shields.io/badge/功能预览-2979FF?style=for-the-badge&logo=eye&logoColor=white" alt="Features"/></a>
   <a href="README_EN.md"><img src="https://img.shields.io/badge/English-FF6F00?style=for-the-badge&logo=translate&logoColor=white" alt="English Version"/></a>
 </p>
 
----
-
-## 💡 为什么需要它？
-
-这绝不只是一个套壳的聊天机器人，这是一套能**完美复活并传承你思想脉络**的 AI 全栈系统。
-
-通过将你自己的文章、日记、研究笔记喂给系统，它会自动建立一个属于你的"第二大脑"，进而为你提供全天候的虚拟导师、自动发推代理、思想图谱提取、以及极具情感震撼的时光机回忆功能。
-
-> *"把过去十年写过的上千篇公众号文章全部灌进 AI 的大脑，让它学会用你的口吻说话、写作、甚至生成年度回忆传记。" —— 星佳的数字生态*
-
----
-
-## 🆕 最新更新 (Recent Updates: v1.1)
-
-- **[NEW] ⏳ 时光机 (Time Machine) 上线**：支持提取你过去 10 年（从 2014 到 2026）的思考碎片，由 AI 自动生成跌宕起伏的**《十年思想演化传记》**。
-- **[NEW] 🔥 高逼格社交海报生成引擎**：无论是知识图谱还是时光机回忆，现在都支持在前端直接渲染生成带有年度金句、暗黑渐变背景和极客水印的 **3倍超清（3x High-Res）长图海报**，一键下载，制霸朋友圈和 X (Twitter)。
-- **[FIX] 模型容灾守护**：全面优化了后端 Gemini 模型的调度逻辑，无缝切换最新 API，保证系统稳定运行。
-
----
-
-## 🎯 核心功能
-
-### ⏳ 时光机与年度传记 (Time Machine)
-从你长达十年的知识库中，精准打捞特定年份的记忆碎片！AI 将化身为你的私人传记作者，用极其强烈的反差（*“当年的你 vs 现在的你”*）串联起重大决定、心境转变，并为你精选出**年度四个字主题**与**最扎心金句**。最后，一键为您生成极具视觉冲击力的社交分享长图。
-
 <p align="center">
-  <b>👇 [此处在此上传时光机海报的新截图] 👇</b>
-  <br>
-  <img src="docs/images/time_machine_placeholder.png" width="700" alt="Time Machine Poster Placeholder"/>
-  <br>
-  <i>(建议上传一张带渐变背景的时光机金句海报在此)</i>
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit"/>
+  <img src="https://img.shields.io/badge/Google%20Gemini-4285F4?style=flat-square&logo=google&logoColor=white" alt="Gemini"/>
+  <img src="https://img.shields.io/badge/ChromaDB-FF6F00?style=flat-square&logo=databricks&logoColor=white" alt="ChromaDB"/>
+  <img src="https://img.shields.io/badge/LangChain-000000?style=flat-square&logo=chainlink&logoColor=white" alt="LangChain"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
 </p>
 
 ---
 
-### 🤔 思想演化图谱 (Knowledge Graph)
-不再是线性的文字阅读！系统自动从你的历史文章库中随机抽取素材，提炼核心理念的相互关联模型，并利用 Mermaid 前端为你绘制庞大的思维导图。点击下载，即可获得一张完美的高清白底知识图谱。
+## 💡 这是什么？
+
+这不是一个普通的 ChatGPT 套壳。  
+这是一套能**完美复活你思想脉络**的 AI 全栈系统 —— 你的数字灵魂分身。
+
+通过将你自己的文章、日记、研究笔记（5000 篇以上）喂给系统，它会自动建立一个属于你的"第二大脑"（近 30,000 个知识切片），并为你提供 **8 大超级 AI 能力**。
+
+> *"把过去十二年写过的上千篇公众号文章全部灌进 AI 的大脑，让它学会用你的口吻说话、写作、思辨、出书、甚至帮你录播客。"*
+
+### 🎯 核心价值
+
+| 痛点 | My Digital Mentor 的解法 |
+|------|------------------------|
+| 🔍 写过的好文章自己都找不到了 | AI 帮你从 3 万个碎片中精准召回 |
+| ✍️ 想写文章但没灵感、没时间 | 替身写作，完美模仿你的笔触秒出千字稿 |
+| 🐦 想发推特但组织不好语言 | 一键生成中英双语爆款推文 + 配图提示词 |
+| 📊 想看看自己这些年到底在想什么 | 自动生成思想图谱，可视化你的认知地图 |
+| 📚 想出一本书但无从下手 | 基于历史文章自动生成书稿大纲和章节内容 |
+| 🧠 做重要决策时想找个靠谱的对手 | 认知对抗教练用你自己的话反驳你 |
+| 🎙️ 想做播客但不会写脚本 | AI 一键生成 Host/Guest 对谈剧本 |
+| 📈 想看自己某个话题的思想是怎么进化的 | 时光机按年份分析你的认知演变轨迹 |
+
+---
+
+## 🆕 最新更新
+
+### **v2.0.0** (2026-03-02) · 重大版本更新 🎉
+
+**🌟 新增四大超级功能**
+- **🕰️ 思想时光机 (Time Machine)**：输入任何主题，AI 从你不同年代的文章中分析你思想的演化脉络
+- **� 个人数字出版局 (Auto-Publisher)**：一键从你的知识库中生成书稿大纲与章节内容
+- **⚔️ 认知对抗教练 (Cognitive Challenger)**：AI 化身魔鬼教练，用你过去的文字反驳你的冲动决定
+- **🎙️ AI 播客生成器 (Podcast Generator)**：基于知识库自动生成 Host/嘉宾 对谈式播客脚本
+
+**🛡️ 工程级稳健性增强**
+- 全局 API 调用自动重试机制（指数退避 × 3 次重试），彻底解决代理/VPN 环境下的 SSL/DNS 闪断
+- Mermaid 图谱渲染引擎重构，暴力剥离 LLM 输出中的非法字符，图谱渲染成功率提升至 100%
+- 手机端 Session State 安全降级，彻底解决移动端 Safari 重载报错
+
+---
+
+## �️ 八大核心功能
+
+### 🧠 1. 灵魂导师 (AI Mentor)
+
+随时找它倾诉困惑。它不仅会回答，还会巧妙地引用**你过去写过的金句和段落**来开导你。附带可选的语音播报功能（TTS）。
+
+> 不是在跟一个陌生的 AI 聊天，而是在跟「最了解你的自己」对话。
+
+<p align="center">
+  <img src="docs/images/chat_mentor_response.png" width="700" alt="AI Mentor Response"/>
+</p>
+
+---
+
+### ✍️ 2. 替身写作 (AI Writer)
+
+完全模仿"你的笔触"瞬间出稿千字长文。系统会从你的知识库中检索相关历史文章，深度学习你的风格后进行高质量原创写作。
+
+<p align="center">
+  <img src="docs/images/ai_writer.png" width="700" alt="AI Writer"/>
+</p>
+
+---
+
+### 🤔 3. 思想图谱 (Knowledge Graph)
+
+自动从你近 3 万个知识切片中随机抽取 200 个片段，提炼并可视化你的核心理念网络，生成极具社交传播力的高颜值思维导图。支持一键导出 3 倍高清 PNG。
 
 <p align="center">
   <img src="docs/images/knowledge_graph.png" width="700" alt="Knowledge Graph"/>
@@ -59,17 +101,9 @@
 
 ---
 
-### � 灵魂导师 (AI Mentor)
-随时找“你自己”倾诉困惑。它不仅会回答，还会巧妙地引用你过去 10 年写过真实经历与心得来开导你，让你获得穿越时空的顿悟（附带实时可选的 Azure 语音播报功能）。
+### 🐦 4. 推特分发机 (Twitter Agent)
 
-<p align="center">
-  <img src="docs/images/ai_mentor.png" width="700" alt="AI Mentor"/>
-</p>
-
----
-
-### ✍️ 替身写作 & 🐦 推特分发机
-完全模仿"你的笔触"瞬间出稿千字长文，或者将你的沉思潜意识提炼成极具穿透力的双语短推文（中英对照），并在末尾为你附带完美的 Midjourney AI 配图 Prompt！
+从你的潜意识碎片库里随机打捞灵感，重写为极具穿透力的双语推文（中英对照），并附带 AI 配图 Prompt，一键喂给 Midjourney 就能出图。
 
 <p align="center">
   <img src="docs/images/twitter_agent.png" width="700" alt="Twitter Agent"/>
@@ -77,13 +111,51 @@
 
 ---
 
-## 🚀 极速本地部署
+### 🕰️ 5. 思想时光机 (Time Machine) `NEW`
+
+输入任何一个主题（如"投资"、"创业"、"家庭"），系统会跨年代检索你的历史文章，让 AI 按时间线分析你在这个话题上的**认知演化轨迹** —— 从最初的幼稚想法到最终的深度洞察。
+
+> 送你一份专属的「思想编年史」。
+
+<p align="center">
+  <img src="docs/images/time_machine.png" width="700" alt="Time Machine"/>
+</p>
+
+---
+
+### 📚 6. 个人数字出版局 (Auto-Publisher) `NEW`
+
+给一个主题，AI 自动从你的知识库中翻箱倒柜，生成一本只属于你的**书稿大纲和章节初稿**。所有内容都严格基于你的历史写作，保留你的原汁原味。
+
+---
+
+### ⚔️ 7. 认知对抗教练 (Cognitive Challenger) `NEW`
+
+AI 化身硬核魔鬼教练。当你冲动想做什么重大决定时，它会翻遍你的历史文章，用**你自己说过的话来反驳你**，发出直击灵魂的三连质问。
+
+> *"你上次创业的'尸体'还没凉透，这次的'新欢'凭什么就能活下来？"*
+
+<p align="center">
+  <img src="docs/images/cognitive_challenger.png" width="700" alt="Cognitive Challenger"/>
+</p>
+
+---
+
+### 🎙️ 8. AI 播客生成器 (Podcast Generator) `NEW`
+
+输入一个话题，AI 自动生成一期完整的**双人播客对谈脚本**（Host/嘉宾格式），包含时间戳、音效提示、金句萃取，拿去直接录制即可。
+
+<p align="center">
+  <img src="docs/images/podcast_generator.png" width="700" alt="Podcast Generator"/>
+</p>
+
+---
+
+## 🚀 快速上手
 
 ### 1️⃣ 环境准备
 
 > ⚠️ **前置要求**：请确保你的电脑已安装 [Python 3.10+](https://www.python.org/downloads/) 和 [Git](https://git-scm.com/downloads)。
-
-打开终端（Windows: PowerShell / Mac: Terminal），依次执行：
 
 ```bash
 # 克隆项目到本地
@@ -94,56 +166,103 @@ cd My-Digital-Mentor
 pip install -r requirements.txt
 ```
 
-### 2️⃣ 灵魂注入：一键配置 API 密钥
-
-先复制一份环境变量文件：
+### 2️⃣ 配置 API 密钥（⭐ 最关键的一步）
 
 ```bash
-# Windows 用户
-copy .env.example .env
-
-# Mac / Linux 用户
+# Mac / Linux
 cp .env.example .env
+
+# Windows
+copy .env.example .env
 ```
 
-用文本编辑器打开 `.env` 文件，填入你的**两把核心钥匙**：
+用任何文本编辑器打开 `.env` 文件，按下表填入你的密钥：
 
 | 变量名 | 是否必填 | 用途 | 获取方式 |
 |---|:---:|---|---|
-| `GOOGLE_API_KEY` | ✅ 必填 | 驱动整个生态的大脑 (LLM) | 在 [Google AI Studio](https://aistudio.google.com/app/apikey) 免费申请 |
-| `GCP_PROJECT_ID` | ✅ 必填 | 连接 Vertex AI 生成向量 | 在 [Google Cloud Console](https://console.cloud.google.com/) 复制任意项目的 ID |
-| `APP_PASSWORD` | ✅ 必填 | Web 界面的访问密码 | 随便设一个（比如 `123456`）保护你的数据 |
+| `GOOGLE_API_KEY` | ✅ 必填 | 驱动 AI 对话与写作 | [Google AI Studio](https://aistudio.google.com/app/apikey)（免费） |
+| `GCP_PROJECT_ID` | ✅ 必填 | 文本向量化服务 | [Google Cloud Console](https://console.cloud.google.com/) |
+| `APP_PASSWORD` | ✅ 必填 | Web 界面登录密码 | 自己随便设一个即可 |
+| `FEISHU_APP_ID` / `SECRET` | ❌ 可选 | 飞书推送 | [飞书开放平台](https://open.feishu.cn/) |
+| `TWITTER_API_KEY` 等 | ❌ 可选 | 推特自动发布 | [Twitter Developer](https://developer.twitter.com/) |
 
-*(其他如飞书或推测的 Key 如不使用相关功能，直接为空即可。)*
+> 💡 **小白提示**：如果只想体验核心功能，只需要填前三项！
 
-### 3️⃣ 训练你的“第二大脑”
+### 3️⃣ 构建你的 AI 大脑
 
-将你的文章数据（支持 `.txt`, `.md`，建议按年份建立文件夹分类）直接扔进项目里的 `公众号/` (或 `gongzhonghao/`) 文件夹。
-
-随后只需执行一次该命令进行知识入库（支持无缝增量扫描，绝不重复计算）：
+将你的文章（`.txt`、`.md` 格式）放入 `公众号/` 或 `gongzhonghao/` 文件夹，然后运行：
 
 ```bash
 python rag_ingest.py
 ```
-*(几千篇文章将在几分钟内被切分、转化为 ChromaDB 向量特征并永久保存在本地)*
 
-### 4️⃣ 启动 Web 生态面板 🎉
+> 这会自动将文本切割、向量化，并存储在本地 `chroma_db/` 中。以后新增文章只需重新运行即可增量更新。
 
-一切就绪，只需要运行：
+### 4️⃣ 启动系统 🎉
 
 ```bash
 streamlit run web_ui.py
 ```
-打开浏览器访问 `http://localhost:8501`，享受你的私人 AI 矩阵吧！
+
+打开 `http://localhost:8501`，输入你设置的密码，开始享受你的数字生态！
+
+### 5️⃣ 手机访问（可选）
+
+想在手机上随时随地使用？推荐安装 [Tailscale](https://tailscale.com/)（免费），在所有设备上登录同一账号后，手机浏览器访问 `http://你的Mac-Tailscale-IP:8501` 即可。用 Safari 的"添加到主屏幕"功能可以把它变成一个全屏 APP。
 
 ---
 
-## 📁 核心架构
+## 📁 项目结构
 
 ```
 My-Digital-Mentor/
-## 🤝 开源协议
+├── web_ui.py              # 🌐 主系统 Web 界面（Streamlit，8 大功能）
+├── rag_ingest.py          # 📥 知识库构建脚本（支持增量更新）
+├── run_tests.py           # 🧪 自动化测试脚本
+├── daily_push.py          # 📤 飞书每日金句推送（定时服务）
+├── feishu_bot.py          # 🤖 飞书智能新闻播报机器人
+├── twitter_auto_agent.py  # 🐦 推特自动发布代理
+├── .env.example           # 🔑 环境变量模板
+├── requirements.txt       # 📦 依赖清单
+├── docs/images/           # 📸 功能截图
+├── 公众号/                # 📚 文章数据（可替换为你自己的内容）
+└── chroma_db/             # � 向量知识库（自动生成）
+```
+
+---
+
+## 🔧 技术架构
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Streamlit  │────▶│  LangChain   │────▶│  ChromaDB    │
+│   Web UI     │     │  RAG Engine  │     │  Vector Store│
+│  (8 Modules) │     │  (Retrieval) │     │  (30K Chunks)│
+└──────────────┘     └──────────────┘     └──────────────┘
+       │                    │
+       ▼                    ▼
+┌──────────────┐     ┌──────────────┐
+│ Google Gemini│     │   Embeddings │
+│   2.5 Pro    │     │ gemini-001   │
+│ (Generation) │     │ (Vectorize)  │
+└──────────────┘     └──────────────┘
+```
+
+---
+
+## ⚠️ 安全声明
+
+- 🔒 所有敏感配置均通过 `.env` 文件管理，**绝不会被 Git 跟踪**
+- 🛡️ `.gitignore` 已严格配置，自动拦截 `.env`、`chroma_db/`、VPN 配置等敏感文件
+- ⚡ 系统内置了 API Key 泄露自救面板：即使密钥失效，也不会崩溃
+- 🔄 所有网络调用均内置自动重试机制，抗 VPN/代理环境下的网络抖动
+
+> **⚠️ 重要提醒：绝对不要将你的 `.env` 文件推送到任何公开仓库！**
+
+---
+
+## �🤝 开源协议
 
 MIT License · 欢迎 Star ⭐ · 欢迎 Fork 🍴 · 欢迎 PR 🎉
 
-*Powered by Google Gemini & LangChain & ChromaDB*
+*Powered by Google Gemini 2.5 Pro · LangChain · ChromaDB · Streamlit*
