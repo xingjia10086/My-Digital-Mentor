@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 写作分身 | My Digital Mentor</title>
+  <meta name="description" content="把你过去写过的文章，变成一个会继续帮你写的 AI 写作分身。导入旧内容、检索旧观点、保留你的表达方式，生成更像你的新稿。">
+  <style>
+    :root {
+      --bg: #f3eee5;
+      --paper: #fffdf8;
+      --ink: #18212b;
+      --muted: #5a6470;
+      --line: rgba(24, 33, 43, 0.12);
+      --accent: #c74d29;
+      --accent-dark: #873116;
+      --accent-soft: #f3d8cd;
+      --moss: #5c6840;
+      --deep: #1c2d39;
+      --shadow: 0 24px 60px rgba(30, 30, 30, 0.08);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --max: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Serif SC", serif;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at top left, rgba(199, 77, 41, 0.1), transparent 32%),
+        radial-gradient(circle at 88% 10%, rgba(92, 104, 64, 0.12), transparent 28%),
+        linear-gradient(180deg, #f7f1e7 0%, #ece2d3 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(247, 241, 231, 0.74);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(24, 33, 43, 0.08);
+    }
+
+    .topbar-inner {
+      padding: 16px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #f2b292);
+      box-shadow: 0 0 0 6px rgba(199, 77, 41, 0.14);
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .nav a:hover {
+      color: var(--ink);
+    }
+
+    .hero {
+      padding: 60px 0 54px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 34px;
+    }
+
+    .hero-copy,
+    .hero-visual {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(24, 33, 43, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      background: rgba(255, 253, 248, 0.9);
+      padding: 42px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    h1 {
+      margin-top: 24px;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      letter-spacing: -0.045em;
+      max-width: 9ch;
+    }
+
+    .hero-subtitle {
+      margin-top: 24px;
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.85;
+    }
+
+    .cta-row {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .button {
+      min-height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: var(--accent);
+      color: #fff8f2;
+      box-shadow: 0 12px 28px rgba(199, 77, 41, 0.28);
+    }
+
+    .button-primary:hover {
+      background: #b14320;
+    }
+
+    .button-secondary {
+      background: transparent;
+      border-color: rgba(24, 33, 43, 0.14);
+      color: var(--ink);
+    }
+
+    .button-secondary:hover {
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .proof-grid {
+      margin-top: 30px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .proof strong {
+      display: block;
+      font-size: 26px;
+      letter-spacing: -0.04em;
+    }
+
+    .proof span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .hero-visual {
+      padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(28, 45, 57, 0.96), rgba(25, 36, 48, 0.98)),
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 32%);
+      color: #f0ece5;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .visual-block {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 18px;
+    }
+
+    .visual-tag {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #f5d5c8;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .visual-block h3 {
+      margin-top: 14px;
+      font-size: 26px;
+    }
+
+    .visual-block p {
+      margin: 12px 0 0;
+      color: rgba(240, 236, 229, 0.76);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .visual-image {
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .visual-points {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .point {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .point strong {
+      display: block;
+      color: #fff4ee;
+      font-size: 15px;
+    }
+
+    .point span {
+      display: block;
+      margin-top: 8px;
+      color: rgba(240, 236, 229, 0.72);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    section {
+      padding: 26px 0 72px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .section-kicker {
+      margin-bottom: 14px;
+      color: var(--accent-dark);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.04em;
+      max-width: 12ch;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .grid-2,
+    .grid-4 {
+      display: grid;
+      gap: 22px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid rgba(24, 33, 43, 0.08);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .step-no {
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .compare-wrap {
+      overflow-x: auto;
+      background: var(--paper);
+      border: 1px solid rgba(24, 33, 43, 0.08);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 20px 24px;
+      text-align: left;
+      border-bottom: 1px solid rgba(24, 33, 43, 0.08);
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(92, 104, 64, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td:first-child {
+      font-weight: 700;
+      color: var(--ink);
+      width: 24%;
+    }
+
+    .showcase {
+      display: grid;
+      grid-template-columns: 1.06fr 0.94fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .showcase-copy {
+      background: linear-gradient(180deg, rgba(92, 104, 64, 0.14), rgba(92, 104, 64, 0.07));
+      padding: 30px;
+      border-radius: 26px;
+    }
+
+    .showcase-copy h3 {
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .showcase-copy p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.78;
+    }
+
+    .showcase-list {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .showcase-item {
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(24, 33, 43, 0.07);
+      border-radius: 16px;
+    }
+
+    .showcase-item strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .showcase-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .showcase-image {
+      padding: 18px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(28, 45, 57, 0.97), rgba(33, 42, 50, 0.97));
+      display: flex;
+      align-items: center;
+    }
+
+    .showcase-image img {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 42px;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.18), transparent 28%),
+        linear-gradient(135deg, #1e3140 0%, #28313a 40%, #8c3418 100%);
+      color: #f8f1e8;
+      box-shadow: 0 28px 70px rgba(38, 34, 31, 0.18);
+    }
+
+    .cta-panel::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -80px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .cta-panel h2 {
+      max-width: 12ch;
+      color: #fff8f0;
+    }
+
+    .cta-panel p {
+      margin-top: 18px;
+      max-width: 42rem;
+      color: rgba(248, 241, 232, 0.82);
+      font-size: 19px;
+      line-height: 1.8;
+    }
+
+    .footer {
+      padding: 0 0 42px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      border-top: 1px solid rgba(24, 33, 43, 0.08);
+      padding-top: 20px;
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .section-head,
+      .showcase {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner,
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .hero-copy,
+      .hero-visual,
+      .cta-panel {
+        padding: 24px;
+      }
+
+      .proof-grid,
+      .grid-2,
+      .grid-4,
+      .visual-points {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>My Digital Mentor</span>
+      </div>
+      <nav class="nav">
+        <a href="#problem">问题</a>
+        <a href="#how">原理</a>
+        <a href="#difference">差异</a>
+        <a href="#use-cases">场景</a>
+        <a href="https://github.com/xingjia10086/My-Digital-Mentor">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Personal AI Writer</div>
+          <h1>把你过去写过的文章，变成你未来持续写作的增量。</h1>
+          <p class="hero-subtitle">
+            导入你过去的文章、笔记、newsletter 或日记，检索你旧有的观点与表达方式，保留你的语气、结构和长期主题，生成更像你自己的新稿，而不是一眼就看出是 AI 写的平均化内容。
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="https://github.com/xingjia10086/My-Digital-Mentor">查看项目</a>
+            <a class="button button-secondary" href="#showcase">看演示逻辑</a>
+          </div>
+          <div class="proof-grid">
+            <div class="proof">
+              <strong>先检索后生成</strong>
+              <span>不是从空白开始写，而是先调动你过去真正写过的内容。</span>
+            </div>
+            <div class="proof">
+              <strong>更像你自己</strong>
+              <span>尽量延续你的表达方式、长期主题和结构习惯，而不是变成通用 AI 口吻。</span>
+            </div>
+            <div class="proof">
+              <strong>越写越值钱</strong>
+              <span>你的内容积累不是沉没成本，而是会持续复利的写作资产。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="visual-block">
+            <div class="visual-tag">核心入口</div>
+            <h3>不是另一个 AI 写作工具。</h3>
+            <p>AI 写作分身的关键，不是“写得更快”这么简单，而是让你写得更快的时候，不要越来越不像你自己。</p>
+          </div>
+
+          <div class="visual-image">
+            <img src="images/ai_writer.png" alt="AI 写作分身界面截图">
+          </div>
+
+          <div class="visual-points">
+            <div class="point">
+              <strong>导入旧内容</strong>
+              <span>公众号、Markdown、日记、newsletter 都可以变成可复用的内容资产。</span>
+            </div>
+            <div class="point">
+              <strong>找回旧观点</strong>
+              <span>把你几年前写过但早已沉没的表达方式重新调出来。</span>
+            </div>
+            <div class="point">
+              <strong>生成新稿件</strong>
+              <span>用旧内容做输入，而不是每次从零让模型瞎猜。</span>
+            </div>
+            <div class="point">
+              <strong>形成复利</strong>
+              <span>你积累得越久，这个系统未来帮你写得越稳、越像你。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">问题</div>
+            <h2>你真正缺的不是内容，而是把旧内容重新变成生产力的能力。</h2>
+          </div>
+          <div class="section-copy">
+            对很多写作者、创业者、研究者来说，真正的痛点不是“没有想法”，而是明明已经写了很多年，却很难把这些旧内容高效调出来，继续写成新的高质量内容。
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>旧内容埋得太深</h3>
+            <p>你写过很多文章、卡片、日记、公众号、博客，但真正要继续写的时候，最有价值的部分根本调不出来。</p>
+          </article>
+          <article class="card">
+            <h3>风格难以延续</h3>
+            <p>普通 AI 可以帮你快，但很容易把你的内容写成更平均、更扁平、更不像你自己的样子。</p>
+          </article>
+          <article class="card">
+            <h3>每次都像从零开始</h3>
+            <p>哪怕你已经积累了几年内容，打开新文档时依旧会遇到空白页压力，前期组织材料非常耗神。</p>
+          </article>
+          <article class="card">
+            <h3>内容资产没有复利</h3>
+            <p>你过去写过的东西没有变成系统能力，只是安静地躺在文件夹和平台历史记录里。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">原理</div>
+            <h2>它本质上是一个建立在你内容档案上的写作系统。</h2>
+          </div>
+          <div class="section-copy">
+            不是一句 prompt 让模型“模仿一下语气”，而是先把你的历史内容变成可检索、可组合、可复用的写作底座，再在这个基础上生成新稿。
+          </div>
+        </div>
+
+        <div class="grid-4">
+          <article class="card">
+            <div class="step-no">Step 1</div>
+            <h3>导入</h3>
+            <p>把过去写过的文章、Markdown、日记、newsletter 导进来，先把存量内容变成真正可用的数据资产。</p>
+          </article>
+          <article class="card">
+            <div class="step-no">Step 2</div>
+            <h3>检索</h3>
+            <p>围绕当前要写的主题，召回你过去相关的观点、语言片段、结构习惯和长期主题。</p>
+          </article>
+          <article class="card">
+            <div class="step-no">Step 3</div>
+            <h3>生成</h3>
+            <p>让模型站在你的旧内容上继续写，而不是让它凭空生成一篇“看起来还行”的标准化稿件。</p>
+          </article>
+          <article class="card">
+            <div class="step-no">Step 4</div>
+            <h3>发布</h3>
+            <p>把这些被重新调动出来的内容变成公众号、newsletter、长文、演讲稿、脚本或书稿初稿。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="difference">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">差异</div>
+            <h2>不是普通 AI 写作，而是基于你内容档案的写作。</h2>
+          </div>
+          <div class="section-copy">
+            大多数 AI 写作工具优化的是“速度”，而 AI 写作分身优化的是“速度 + 像你自己”。关键差别在于：它不是先问模型会写什么，而是先问你过去写过什么。
+          </div>
+        </div>
+
+        <div class="compare-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>普通 AI 写作工具</th>
+                <th>AI 写作分身</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>内容来源</td>
+                <td>主要依赖模型常识和通用语料。</td>
+                <td>先检索你的历史内容，再基于你的内容生成。</td>
+              </tr>
+              <tr>
+                <td>默认风格</td>
+                <td>写得快，但容易变得平均化。</td>
+                <td>更接近你的真实语气、结构和长期表达方式。</td>
+              </tr>
+              <tr>
+                <td>起稿方式</td>
+                <td>每次都像在空白页上重新开始。</td>
+                <td>直接从你过去写过的内容中调材料、调观点、调语言。</td>
+              </tr>
+              <tr>
+                <td>长期价值</td>
+                <td>一次性方便，用完即走。</td>
+                <td>你的内容积累越多，它未来越有复利价值。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="showcase">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">演示逻辑</div>
+            <h2>最强的演示不是“AI 很聪明”，而是“它真的从你的旧文章里长出来”。</h2>
+          </div>
+          <div class="section-copy">
+            最有说服力的展示方式，是让用户一眼看到：旧文章进来，相关内容被检索出来，然后形成一个更像自己的新稿。这种演示比堆功能更容易建立价值感。
+          </div>
+        </div>
+
+        <div class="showcase">
+          <div class="showcase-copy">
+            <h3>最值得优先打磨的不是 8 个模块，而是一个最清晰的产品入口。</h3>
+            <p>也就是：把你的文章存量，变成你未来持续写作的增量。只要这个入口足够强，后面的思想图谱、时光机、播客、出版局，都会变成扩展价值，而不是分散注意力的功能堆叠。</p>
+            <div class="showcase-list">
+              <div class="showcase-item">
+                <strong>Newsletter 起稿</strong>
+                <span>把过去几年写过的长文和片段，快速整理成下一期新稿的第一版。</span>
+              </div>
+              <div class="showcase-item">
+                <strong>长文继续写</strong>
+                <span>围绕一个主题，从你旧内容里先调出历史观点，再继续扩写成完整文章。</span>
+              </div>
+              <div class="showcase-item">
+                <strong>创始人内容系统</strong>
+                <span>把过去的公开表达转成未来的文章、演讲稿、备忘录和个人品牌内容。</span>
+              </div>
+              <div class="showcase-item">
+                <strong>书稿整理</strong>
+                <span>从几年甚至十几年的内容中找出结构，把零散表达编排成章节。</span>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-image">
+            <img src="images/chat_mentor_response.png" alt="AI 导师界面截图">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="use-cases">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">适合谁</div>
+            <h2>最适合已经有内容积累的人，而不是从零开始的人。</h2>
+          </div>
+          <div class="section-copy">
+            AI 写作分身的威力来自真实的内容档案，所以它最适合那些已经写过很多、但没有高效复用系统的人。内容积累越多，体验越强，价值越大。
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>写作者 / 公众号作者</h3>
+            <p>想提高输出效率，又不想让内容越来越不像自己的人。</p>
+          </article>
+          <article class="card">
+            <h3>创业者 / 个人品牌经营者</h3>
+            <p>希望把过去的观点沉淀转成未来持续可输出的内容系统。</p>
+          </article>
+          <article class="card">
+            <h3>研究者 / 知识工作者</h3>
+            <p>有长期笔记和思考积累，想把它们重新组织成更高密度的输出。</p>
+          </article>
+          <article class="card">
+            <h3>长期内容积累者</h3>
+            <p>你越觉得“我其实写了很多，但没有真正复用起来”，这个系统对你越有价值。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="cta-panel">
+          <div class="section-kicker" style="color: #f4c7b6;">最后一屏</div>
+          <h2>你的内容档案，不应该只是静静躺着。</h2>
+          <p>
+            把你过去写过的文章，变成一个会继续帮你写的 AI 系统。不是让 AI 替代你，而是让它站在你过去几年真实写过的内容之上，帮助你更快、更稳、更像你自己地继续输出。
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="https://github.com/xingjia10086/My-Digital-Mentor">查看 GitHub 项目</a>
+            <a class="button button-secondary" href="LANDING_COPY_PERSONAL_AI_WRITER.md">查看商业化文案稿</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <div>AI 写作分身 · My Digital Mentor</div>
+      <div>把旧文章变成未来写作增量</div>
+    </div>
+  </footer>
+</body>
+</html>

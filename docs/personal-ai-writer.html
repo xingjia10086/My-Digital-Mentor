@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal AI Writer | My Digital Mentor</title>
+  <meta name="description" content="Turn your past writing into an AI writing system that sounds like you. Personal AI Writer helps creators, founders, and knowledge workers reuse their archive to write faster without sounding generic.">
+  <style>
+    :root {
+      --bg: #f2efe8;
+      --paper: #fffdf8;
+      --ink: #15202b;
+      --muted: #55606d;
+      --line: rgba(21, 32, 43, 0.12);
+      --accent: #c84f2a;
+      --accent-dark: #8d3518;
+      --accent-soft: #f3d9d0;
+      --olive: #5d6a3b;
+      --olive-soft: #dfe4cf;
+      --deep: #1b2f3d;
+      --card-shadow: 0 24px 60px rgba(33, 33, 33, 0.08);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --max: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top left, rgba(200, 79, 42, 0.09), transparent 32%),
+        radial-gradient(circle at 90% 12%, rgba(93, 106, 59, 0.12), transparent 26%),
+        linear-gradient(180deg, #f6f1e8 0%, #efe6d8 100%);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(246, 241, 232, 0.72);
+      border-bottom: 1px solid rgba(21, 32, 43, 0.08);
+    }
+
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #f2b191);
+      box-shadow: 0 0 0 6px rgba(200, 79, 42, 0.14);
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .nav a:hover {
+      color: var(--ink);
+    }
+
+    .hero {
+      padding: 62px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 34px;
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .hero-visual {
+      background: rgba(255, 253, 248, 0.88);
+      border: 1px solid rgba(21, 32, 43, 0.09);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--card-shadow);
+    }
+
+    .hero-copy {
+      padding: 42px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-weight: 700;
+      line-height: 1.02;
+    }
+
+    h1 {
+      margin-top: 24px;
+      font-size: clamp(3rem, 6vw, 5.7rem);
+      max-width: 10.5ch;
+      letter-spacing: -0.045em;
+    }
+
+    .hero-subtitle {
+      margin-top: 22px;
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.7;
+    }
+
+    .cta-row {
+      margin-top: 30px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: var(--accent);
+      color: #fff7f1;
+      box-shadow: 0 12px 28px rgba(200, 79, 42, 0.28);
+    }
+
+    .button-primary:hover {
+      background: #b54523;
+    }
+
+    .button-secondary {
+      background: transparent;
+      border-color: rgba(21, 32, 43, 0.14);
+      color: var(--ink);
+    }
+
+    .button-secondary:hover {
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .micro-proof {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .proof-item {
+      padding-right: 12px;
+    }
+
+    .proof-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .proof-label {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-visual {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      background:
+        linear-gradient(180deg, rgba(27, 47, 61, 0.95), rgba(24, 36, 49, 0.97)),
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 30%);
+      color: #f0ece4;
+    }
+
+    .visual-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .visual-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .visual-tag {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f4d7c9;
+    }
+
+    .visual-text {
+      max-width: 26ch;
+    }
+
+    .visual-text h3 {
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .visual-text p {
+      margin: 10px 0 0;
+      font-size: 15px;
+      line-height: 1.65;
+      color: rgba(240, 236, 228, 0.76);
+    }
+
+    .visual-image {
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+    }
+
+    .visual-image img {
+      width: 100%;
+      height: auto;
+    }
+
+    .visual-points {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .point {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .point strong {
+      display: block;
+      font-size: 15px;
+      color: #fff2ea;
+    }
+
+    .point span {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+      color: rgba(240, 236, 228, 0.72);
+      line-height: 1.55;
+    }
+
+    section {
+      padding: 28px 0 74px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 26px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .section-kicker {
+      color: var(--accent-dark);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      letter-spacing: -0.04em;
+      max-width: 13ch;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .problem-grid,
+    .benefit-grid,
+    .use-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid rgba(21, 32, 43, 0.08);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
+      padding: 26px;
+    }
+
+    .card h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      letter-spacing: -0.03em;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .card ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .process-step {
+      position: relative;
+      padding: 22px 20px 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.94), rgba(246, 238, 225, 0.94));
+      border: 1px solid rgba(21, 32, 43, 0.08);
+      box-shadow: var(--card-shadow);
+      min-height: 230px;
+    }
+
+    .step-no {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .process-step h3 {
+      margin-top: 14px;
+      font-size: 26px;
+      letter-spacing: -0.03em;
+    }
+
+    .process-step p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.68;
+    }
+
+    .compare-wrap {
+      overflow-x: auto;
+      background: var(--paper);
+      border: 1px solid rgba(21, 32, 43, 0.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--card-shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 20px 24px;
+      text-align: left;
+      border-bottom: 1px solid rgba(21, 32, 43, 0.08);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(93, 106, 59, 0.08);
+    }
+
+    td:first-child {
+      width: 25%;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .showcase {
+      display: grid;
+      grid-template-columns: 1.06fr 0.94fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .showcase-copy {
+      padding: 30px;
+      background: linear-gradient(180deg, rgba(93, 106, 59, 0.14), rgba(93, 106, 59, 0.07));
+    }
+
+    .showcase-copy h3 {
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .showcase-copy p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .showcase-list {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .showcase-item {
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.74);
+      border-radius: 16px;
+      border: 1px solid rgba(21, 32, 43, 0.07);
+    }
+
+    .showcase-item strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .showcase-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .showcase-image {
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(27, 47, 61, 0.96), rgba(37, 46, 53, 0.96));
+    }
+
+    .showcase-image img {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .final-cta {
+      padding-bottom: 90px;
+    }
+
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.18), transparent 26%),
+        linear-gradient(135deg, #1f3140 0%, #28313c 38%, #8d3518 100%);
+      color: #f8f1e8;
+      padding: 42px;
+      box-shadow: 0 28px 70px rgba(38, 34, 31, 0.18);
+    }
+
+    .cta-panel::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -80px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .cta-panel h2 {
+      max-width: 12ch;
+      color: #fff8f0;
+    }
+
+    .cta-panel p {
+      margin-top: 18px;
+      max-width: 42rem;
+      color: rgba(248, 241, 232, 0.8);
+      font-size: 19px;
+      line-height: 1.75;
+    }
+
+    .footer {
+      padding: 0 0 42px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      border-top: 1px solid rgba(21, 32, 43, 0.08);
+      padding-top: 20px;
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .section-head,
+      .showcase {
+        grid-template-columns: 1fr;
+      }
+
+      .process {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner,
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .hero {
+        padding-top: 30px;
+      }
+
+      .hero-copy,
+      .hero-visual,
+      .cta-panel {
+        padding: 24px;
+      }
+
+      .micro-proof,
+      .problem-grid,
+      .benefit-grid,
+      .use-grid,
+      .visual-points,
+      .process {
+        grid-template-columns: 1fr;
+      }
+
+      .showcase-copy,
+      .showcase-image {
+        padding: 20px;
+      }
+
+      h1 {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>My Digital Mentor</span>
+      </div>
+      <nav class="nav">
+        <a href="#problem">Problem</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#difference">Why It Wins</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="https://github.com/xingjia10086/My-Digital-Mentor">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Personal AI Writer</div>
+          <h1>Turn your past writing into future writing output.</h1>
+          <p class="hero-subtitle">
+            Import your old articles, notes, newsletters, or journals. Retrieve your past ideas, preserve your tone, and generate new drafts that feel closer to your real voice instead of generic AI copy.
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="https://github.com/xingjia10086/My-Digital-Mentor">View the Project</a>
+            <a class="button button-secondary" href="#showcase">See the Demo Flow</a>
+          </div>
+          <div class="micro-proof">
+            <div class="proof-item">
+              <div class="proof-value">Archive-first</div>
+              <div class="proof-label">Ground new drafts in what you already wrote.</div>
+            </div>
+            <div class="proof-item">
+              <div class="proof-value">Voice-aware</div>
+              <div class="proof-label">Use your tone, structure, and recurring themes.</div>
+            </div>
+            <div class="proof-item">
+              <div class="proof-value">Creator-ready</div>
+              <div class="proof-label">Built for essays, newsletters, scripts, and public writing.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="visual-top visual-card">
+            <div class="visual-text">
+              <div class="visual-tag">The Product Wedge</div>
+              <h3>Not another generic AI writer.</h3>
+              <p>Personal AI Writer starts from your archive, retrieves your older ideas, and helps you continue writing in a way that feels more recognizably yours.</p>
+            </div>
+          </div>
+
+          <div class="visual-image">
+            <img src="images/ai_writer.png" alt="Personal AI Writer interface screenshot">
+          </div>
+
+          <div class="visual-points">
+            <div class="point">
+              <strong>Import your archive</strong>
+              <span>Articles, markdown notes, journals, and newsletters become a reusable writing base.</span>
+            </div>
+            <div class="point">
+              <strong>Retrieve old ideas</strong>
+              <span>Stop treating your previous work like dead storage that nobody can find again.</span>
+            </div>
+            <div class="point">
+              <strong>Generate new drafts</strong>
+              <span>Use the archive as source material for faster first drafts with stronger continuity.</span>
+            </div>
+            <div class="point">
+              <strong>Compound over time</strong>
+              <span>The more you write, the more useful the system becomes for future output.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">The Problem</div>
+            <h2>You already wrote the raw material. You just cannot reuse it efficiently.</h2>
+          </div>
+          <div class="section-copy">
+            If you are a creator, founder, researcher, or knowledge worker, you probably already have years of valuable writing. The problem is not lack of ideas. The problem is that your ideas are buried, fragmented, and hard to continue in your own voice.
+          </div>
+        </div>
+
+        <div class="problem-grid">
+          <article class="card">
+            <h3>Your archive is trapped.</h3>
+            <p>You wrote hundreds or thousands of pages, but when it is time to write again, those ideas are hard to find, hard to connect, and hard to reuse.</p>
+          </article>
+          <article class="card">
+            <h3>Your voice is expensive.</h3>
+            <p>Generic AI can write quickly, but it usually makes you sound flatter, more average, and less like the person your readers actually follow.</p>
+          </article>
+          <article class="card">
+            <h3>Every draft feels like zero.</h3>
+            <p>Even with years of written material, most people still face the blank page like they are starting from scratch.</p>
+          </article>
+          <article class="card">
+            <h3>Consistency breaks under pressure.</h3>
+            <p>As output expectations rise, it gets harder to preserve your tone, themes, and depth across newsletters, essays, scripts, and public writing.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">How It Works</div>
+            <h2>A writing system built from your own archive.</h2>
+          </div>
+          <div class="section-copy">
+            Personal AI Writer focuses on one high-value loop: import your archive, retrieve your old ideas, preserve your tone, and produce new writing that still feels like your work instead of generic model output.
+          </div>
+        </div>
+
+        <div class="process">
+          <article class="process-step">
+            <div class="step-no">Step 1</div>
+            <h3>Import</h3>
+            <p>Bring in your articles, notes, journals, markdown files, or newsletter drafts so your writing history becomes usable input instead of dead storage.</p>
+          </article>
+          <article class="process-step">
+            <div class="step-no">Step 2</div>
+            <h3>Retrieve</h3>
+            <p>Search your archive for relevant fragments, arguments, language patterns, and recurring themes tied to the topic you want to write about now.</p>
+          </article>
+          <article class="process-step">
+            <div class="step-no">Step 3</div>
+            <h3>Generate</h3>
+            <p>Use your past writing as the source of truth for a new first draft that feels closer to your actual tone, structure, and point of view.</p>
+          </article>
+          <article class="process-step">
+            <div class="step-no">Step 4</div>
+            <h3>Publish</h3>
+            <p>Turn archive fragments into essays, newsletters, long-form posts, talk outlines, social content, book drafts, or podcast scripts.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="difference">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Why It Wins</div>
+            <h2>Not just AI writing. Archive-powered writing.</h2>
+          </div>
+          <div class="section-copy">
+            Most writing tools optimize for speed. This optimizes for speed <em>and</em> continuity of voice. The difference is where the first draft starts: model priors versus your own history.
+          </div>
+        </div>
+
+        <div class="compare-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Generic AI Writer</th>
+                <th>Personal AI Writer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Source of truth</td>
+                <td>Writes mainly from model priors and broad internet patterns.</td>
+                <td>Retrieves your archive first, then generates from your own writing context.</td>
+              </tr>
+              <tr>
+                <td>Default tone</td>
+                <td>Fast, polished, often generic.</td>
+                <td>Closer to your long-term tone, structure, and recurring themes.</td>
+              </tr>
+              <tr>
+                <td>Blank-page problem</td>
+                <td>Still treats each draft like a new page.</td>
+                <td>Starts from what you already wrote and what you already believe.</td>
+              </tr>
+              <tr>
+                <td>Long-term value</td>
+                <td>Useful in the moment, forgettable later.</td>
+                <td>Compounds as your archive grows and gets richer.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="showcase">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Demo Flow</div>
+            <h2>From archive fragments to a usable first draft.</h2>
+          </div>
+          <div class="section-copy">
+            The strongest demo is not abstract. It is concrete: old articles go in, relevant fragments are retrieved, and a draft comes out with stronger continuity of voice than a generic writing tool usually delivers.
+          </div>
+        </div>
+
+        <div class="card showcase">
+          <div class="showcase-copy">
+            <h3>The actual wedge is simple.</h3>
+            <p>This product does not need to lead with eight different capabilities. The strongest front door is much clearer: use old writing to produce new writing that still feels like you.</p>
+            <div class="showcase-list">
+              <div class="showcase-item">
+                <strong>Newsletter drafting</strong>
+                <span>Turn three years of essays into the first draft of your next issue.</span>
+              </div>
+              <div class="showcase-item">
+                <strong>Long-form writing</strong>
+                <span>Pull from your archive to structure a new article around your own previous arguments.</span>
+              </div>
+              <div class="showcase-item">
+                <strong>Founder content</strong>
+                <span>Reuse old public writing for memos, speeches, essays, and public-facing content.</span>
+              </div>
+              <div class="showcase-item">
+                <strong>Book development</strong>
+                <span>Find hidden chapter structure across years of writing and convert it into a stronger outline.</span>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-image">
+            <img src="images/chat_mentor_response.png" alt="Archive-powered mentor screenshot">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="benefits">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Results</div>
+            <h2>What you actually get.</h2>
+          </div>
+          <div class="section-copy">
+            The point is not just “AI that helps you write.” The point is a writing system that reduces blank-page friction, increases continuity, and turns your archive into leverage.
+          </div>
+        </div>
+
+        <div class="benefit-grid">
+          <article class="card">
+            <h3>Faster first drafts</h3>
+            <p>Start with material you already trust instead of waiting for a blank page to become something useful.</p>
+          </article>
+          <article class="card">
+            <h3>Stronger voice continuity</h3>
+            <p>Keep your tone, recurring themes, and argument style more intact than with generic writing tools.</p>
+          </article>
+          <article class="card">
+            <h3>Better reuse of old content</h3>
+            <p>Your archive stops behaving like dead storage and starts acting like production input.</p>
+          </article>
+          <article class="card">
+            <h3>Compounding value</h3>
+            <p>The more you write, the better the system becomes at helping you write again later.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="use-cases">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Use Cases</div>
+            <h2>Built for creators, founders, and knowledge workers.</h2>
+          </div>
+          <div class="section-copy">
+            Personal AI Writer is strongest when the archive is real. That means it fits people with years of published thoughts, private notes, internal memos, essays, or public writing they want to keep extending.
+          </div>
+        </div>
+
+        <div class="use-grid">
+          <article class="card">
+            <h3>Creators</h3>
+            <p>Writers, newsletter authors, bloggers, and public thinkers who want higher output without sounding more generic.</p>
+          </article>
+          <article class="card">
+            <h3>Founders</h3>
+            <p>Use old writing to produce clearer memos, speeches, articles, investor notes, and thought-leadership content faster.</p>
+          </article>
+          <article class="card">
+            <h3>Researchers</h3>
+            <p>Turn years of notes, drafts, and essays into a structured engine for new synthesis and long-form writing.</p>
+          </article>
+          <article class="card">
+            <h3>Archive-heavy professionals</h3>
+            <p>If you have years of material but no practical way to reuse it, this is where the leverage starts.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="shell">
+        <div class="cta-panel">
+          <div class="section-kicker" style="color: #f5c9b8;">Final Call</div>
+          <h2>Your archive should not stay buried.</h2>
+          <p>
+            Turn your past writing into a system that helps you write again, faster and more like yourself. Start from the strongest wedge first: a Personal AI Writer built from your own archive.
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="https://github.com/xingjia10086/My-Digital-Mentor">Explore on GitHub</a>
+            <a class="button button-secondary" href="LANDING_COPY_PERSONAL_AI_WRITER.md">Read the Copy Doc</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <div>Personal AI Writer by My Digital Mentor</div>
+      <div>Archive-powered writing, not generic AI output.</div>
+    </div>
+  </footer>
+</body>
+</html>
