@@ -97,9 +97,16 @@ def clean_for_tts(text):
 
 def generate_audio(text):
     clean_txt = clean_for_tts(text)
-    cmd = f'edge-tts --text "{clean_txt}" --voice zh-CN-YunxiNeural --write-media {TEMP_AUDIO_FILE}'
     try:
-        subprocess.run(cmd, shell=True, check=True)
+        subprocess.run([
+            "edge-tts",
+            "--text",
+            clean_txt,
+            "--voice",
+            "zh-CN-YunxiNeural",
+            "--write-media",
+            TEMP_AUDIO_FILE,
+        ], check=True)
         return True
     except Exception as e:
         print(f"TTS Error: {e}")
