@@ -55,7 +55,10 @@ def speak_text(text):
         # Play MP3 on Windows (will open default player or run silently depending on settings)
         # A lightweight cross-platform alternative if 'start' opens a big app is sometimes just to alert the user.
         print("\n✅ 语音已生成！正在使用系统默认播放器播放...")
-        os.system(f"start {temp_file}") 
+        if hasattr(os, "startfile"):
+            os.startfile(temp_file)
+        else:
+            print(f"请手动播放音频文件: {temp_file}")
     except Exception as e:
         print(f"语音生成失败: {e}")
 
