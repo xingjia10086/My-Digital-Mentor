@@ -1,11 +1,13 @@
 import "./globals.css";
+import { getSiteUrl } from "../lib/site-url";
 
 const title = "Personal AI Writer | My Digital Mentor";
 const description =
   "Turn your past writing into an AI writing system that sounds like you. A deployable bilingual landing site for My Digital Mentor.";
+const siteUrl = getSiteUrl();
 
 export const metadata = {
-  metadataBase: new URL("https://my-digital-mentor.vercel.app"),
+  metadataBase: new URL(siteUrl),
   title,
   description,
   applicationName: "My Digital Mentor",

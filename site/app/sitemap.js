@@ -1,5 +1,7 @@
+import { getSiteUrl } from "../lib/site-url";
+
 export default function sitemap() {
-  const base = "https://my-digital-mentor.vercel.app";
+  const base = getSiteUrl();
 
   return [
     {
