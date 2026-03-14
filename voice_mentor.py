@@ -41,11 +41,17 @@ def speak_text(text):
     temp_file = "mentor_voice.mp3"
     
     # zh-CN-YunxiNeural: 男性知性声音; zh-CN-XiaoxiaoNeural: 女性声音
-    cmd = f'edge-tts --text "{clean_txt}" --voice zh-CN-YunxiNeural --write-media {temp_file}'
-    
     try:
         # Generate MP3
-        subprocess.run(cmd, shell=True, check=True)
+        subprocess.run([
+            "edge-tts",
+            "--text",
+            clean_txt,
+            "--voice",
+            "zh-CN-YunxiNeural",
+            "--write-media",
+            temp_file,
+        ], check=True)
         # Play MP3 on Windows (will open default player or run silently depending on settings)
         # A lightweight cross-platform alternative if 'start' opens a big app is sometimes just to alert the user.
         print("\n✅ 语音已生成！正在使用系统默认播放器播放...")
