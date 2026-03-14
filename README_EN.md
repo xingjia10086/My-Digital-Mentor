@@ -1,258 +1,424 @@
 <p align="center">
-  <img src="docs/images/main_dashboard.png" width="700" alt="My Digital Mentor Dashboard"/>
+  <img src="docs/images/main_dashboard.png" width="860" alt="My Digital Mentor main dashboard"/>
 </p>
 
-<h1 align="center">🌌 My Digital Mentor</h1>
+<h1 align="center">My Digital Mentor</h1>
 
 <p align="center">
-  <b>A Full-Stack Personal AI Ecosystem Powered by Local RAG + Google Gemini</b>
+  <b>Turn your past writing, notes, journals, and ideas into an AI that sounds more like you.</b>
+</p>
+
+<p align="center">
+  A personal AI system built on your own knowledge base, not generic internet fluff.
 </p>
 
 <p align="center">
   <a href="README.md"><img src="https://img.shields.io/badge/中文文档-E53935?style=for-the-badge&logo=translate&logoColor=white" alt="Chinese Version"/></a>
-  <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
+  <a href="#-quick-start-in-10-minutes"><img src="https://img.shields.io/badge/Quick%20Start-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
+  <a href="#-what-you-can-actually-do-with-it"><img src="https://img.shields.io/badge/Feature%20Tour-2979FF?style=for-the-badge&logo=grid&logoColor=white" alt="Feature Tour"/></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
   <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit"/>
   <img src="https://img.shields.io/badge/Google%20Gemini-4285F4?style=flat-square&logo=google&logoColor=white" alt="Gemini"/>
+  <img src="https://img.shields.io/badge/RAG-Personal%20Knowledge%20Base-111111?style=flat-square" alt="RAG"/>
   <img src="https://img.shields.io/badge/ChromaDB-FF6F00?style=flat-square&logo=databricks&logoColor=white" alt="ChromaDB"/>
-  <img src="https://img.shields.io/badge/LangChain-000000?style=flat-square&logo=chainlink&logoColor=white" alt="LangChain"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
 </p>
 
 ---
 
-## 💡 What Is This?
+## Why this project is different
 
-This is not another ChatGPT wrapper.  
-This is a full-stack AI system that **perfectly revives your thinking patterns** — your digital soul clone.
+Most AI products try to answer:
 
-By feeding the system your own articles, journals, and research notes (5,000+ documents), it builds a "Second Brain" with nearly **30,000 knowledge chunks**, providing you with **8 super AI capabilities**.
+> "Can AI become smarter?"
 
-> *"Pour a decade's worth of your writings into AI's brain and let it learn to speak, write, debate, publish books, and even host podcasts in your own voice."*
+This project asks a more personal question:
 
-### 🎯 Core Value Proposition
+> "Can AI become more like me?"
 
-| Pain Point | How My Digital Mentor Solves It |
-|-----------|-------------------------------|
-| 🔍 Can't find your own great articles anymore | AI precision-recalls from 30K fragments |
-| ✍️ Writer's block, no time to write | Ghost writer perfectly mimics your voice |
-| 🐦 Want to tweet but can't organize thoughts | One-click bilingual viral tweets + image prompts |
-| 📊 Curious what you've been thinking about all these years | Auto-generated knowledge graph of your mind |
-| 📚 Want to write a book but don't know where to start | AI generates a book outline from your archive |
-| 🧠 Need a sparring partner for big decisions | Cognitive Challenger uses YOUR own words against you |
-| 🎙️ Want to start a podcast but can't write scripts | AI generates full Host/Guest dialogue scripts |
-| 📈 Want to see how your thinking on a topic evolved | Time Machine traces your cognitive evolution by year |
+My Digital Mentor is not another chatbot wrapper.  
+It is a local RAG-powered personal AI system that uses your own writing as the source of truth.
 
----
+That means it can:
 
-## 🆕 Recent Updates
+- retrieve your old ideas when you forgot where you wrote them
+- answer with context grounded in your past writing
+- draft new articles in a style closer to your voice
+- map your thinking across years
+- challenge your decisions using your own previous arguments
+- turn your archive into a book outline, tweet engine, or podcast script
 
-### **v2.0.0** (2026-03-02) · Major Release 🎉
-
-**🌟 Four New Super Features**
-- **🕰️ Time Machine**: Input any topic and AI traces how your thinking evolved across years
-- **📚 Auto-Publisher**: One-click book outline and chapter draft generation from your archive
-- **⚔️ Cognitive Challenger**: AI Devil's Advocate that uses your past writings to challenge your decisions
-- **🎙️ Podcast Generator**: Auto-generates two-person podcast dialogue scripts from your knowledge base
-
-**🛡️ Enterprise-Grade Resilience**
-- Global API retry with exponential backoff (3x retries), eliminates SSL/DNS drops behind VPNs
-- Mermaid rendering engine rewrite — 100% graph render success rate
-- Mobile Session State safe fallback — eliminates Safari reload crashes
+If you have years of accumulated content, this project turns that archive into leverage.
 
 ---
 
-## 🏗️ Eight Core Features
+## What it feels like to use
 
-### 🧠 1. AI Mentor (Soul Counselor)
+The experience is not "ChatGPT, but with a custom prompt."
 
-Confide your troubles anytime. It doesn't just respond with generic advice — it cleverly **quotes golden lines from your own past writings** to counsel you. Optional text-to-speech included.
+It feels more like:
 
-> You're not chatting with a stranger AI — you're talking to the version of yourself who remembers everything.
+- talking to a version of yourself that remembers far more than you do
+- writing with an assistant that can actually pull from your old articles
+- reviewing your intellectual history instead of just searching files
+- building a second brain that is queryable, generative, and reusable
+
+The key idea is simple:
+
+> **The raw material is not the internet. It is you.**
+
+---
+
+## Built for creators, thinkers, and knowledge workers
+
+This repo is especially useful if you are:
+
+- a writer, blogger, newsletter author, or public thinker
+- a founder, operator, investor, or researcher
+- someone with years of journals, markdown notes, or article archives
+- interested in PKM, second-brain systems, AI clones, or personal RAG workflows
+
+If you have no real archive, the value is limited.  
+If you have years of content, the value compounds fast.
+
+---
+
+## Visual Tour
+
+### Main Dashboard
 
 <p align="center">
-  <img src="docs/images/chat_mentor_response.png" width="700" alt="AI Mentor Response"/>
+  <img src="docs/images/main_dashboard.png" width="860" alt="Main dashboard"/>
+</p>
+
+### Mentor Conversation Experience
+
+<p align="center">
+  <img src="docs/images/chat_mentor_response.png" width="820" alt="AI mentor conversation"/>
+</p>
+
+### Writing Assistant
+
+<p align="center">
+  <img src="docs/images/ai_writer.png" width="820" alt="AI writer interface"/>
+</p>
+
+### Knowledge Graph
+
+<p align="center">
+  <img src="docs/images/knowledge_graph.png" width="820" alt="Knowledge graph"/>
+</p>
+
+### Time Machine
+
+<p align="center">
+  <img src="docs/images/time_machine.png" width="820" alt="Time machine"/>
+</p>
+
+### Cognitive Challenger
+
+<p align="center">
+  <img src="docs/images/cognitive_challenger.png" width="820" alt="Cognitive challenger"/>
+</p>
+
+### Podcast Generator
+
+<p align="center">
+  <img src="docs/images/podcast_generator.png" width="820" alt="Podcast generator"/>
+</p>
+
+### Twitter Agent
+
+<p align="center">
+  <img src="docs/images/twitter_agent.png" width="820" alt="Twitter agent"/>
 </p>
 
 ---
 
-### ✍️ 2. AI Writer (Ghost Writer)
+## What you can actually do with it
 
-Generates 1500+ word long-form articles that **perfectly mimic your writing style**. The system retrieves relevant historical articles, deeply learns your voice, then creates original content indistinguishable from your own.
+The current app includes 8 core modules.
 
-<p align="center">
-  <img src="docs/images/ai_writer.png" width="700" alt="AI Writer"/>
-</p>
+### 1. AI Mentor
+
+Ask for advice, emotional reflection, or perspective.  
+The system retrieves relevant fragments from your archive and responds with context grounded in your own past words.
+
+This is where the product feels most uncanny:  
+it can comfort you with ideas you once wrote but forgot.
+
+### 2. AI Writer
+
+Generate long-form drafts based on themes from your archive.  
+Instead of generic content generation, it tries to continue your thinking and your tone.
+
+Useful for:
+
+- newsletters
+- essays
+- blog posts
+- scripts
+- speech drafts
+
+### 3. Knowledge Graph
+
+Sample your knowledge base, extract recurring concepts, and turn them into a visual map of your worldview.
+
+Useful for:
+
+- annual reviews
+- personal branding
+- intellectual self-audits
+- social sharing
+
+### 4. Twitter Agent
+
+Surface old ideas from your archive and rewrite them into short-form, shareable bilingual posts with image prompts.
+
+Useful for:
+
+- content repurposing
+- global audience experiments
+- social media cadence
+
+### 5. Time Machine
+
+Enter a topic and trace how your thinking evolved over the years.
+
+Useful for:
+
+- intellectual retrospectives
+- book research
+- topic evolution reports
+- public essays about how your views changed
+
+### 6. Auto-Publisher
+
+Generate a book outline and chapter draft structure from your archive.
+
+Useful for:
+
+- turning an article archive into a book project
+- finding the hidden structure in years of scattered writing
+
+### 7. Cognitive Challenger
+
+Ask the AI to challenge your current decision using your own previous writing as ammunition.
+
+Useful for:
+
+- startup decisions
+- career shifts
+- investment reflection
+- major life tradeoffs
+
+### 8. Podcast Generator
+
+Turn your ideas into a two-person podcast script with structure, dialogue, timestamps, and quotable moments.
+
+Useful for:
+
+- audio recording
+- YouTube scripts
+- live sessions
+- interview prep
 
 ---
 
-### 🤔 3. Knowledge Graph
+## Why people share this project
 
-Automatically samples 200 random fragments from your 30,000 knowledge chunks, extracts and visualizes your core belief network as a stunning, shareable Mermaid mind map. One-click export to 3x high-res PNG.
+This repo is easy to share because the outputs are visual and personal.
 
-<p align="center">
-  <img src="docs/images/knowledge_graph.png" width="700" alt="Knowledge Graph"/>
-</p>
+It can produce:
 
----
+- a map of your mind
+- an essay in your voice
+- a timeline of your beliefs
+- a podcast script from your archive
+- a decision critique based on your past writing
 
-### 🐦 4. Twitter Agent
+That makes it highly shareable across:
 
-Randomly digs up hidden gems from your subconscious fragment library, rewrites them as compelling **bilingual tweets** (Chinese + English) with an AI image prompt for Midjourney attached.
+- GitHub
+- X / Twitter
+- LinkedIn
+- creator communities
+- personal knowledge management circles
+- AI workflow communities
 
-<p align="center">
-  <img src="docs/images/twitter_agent.png" width="700" alt="Twitter Agent"/>
-</p>
+If you try it and like it, the best support is simple:
 
----
-
-### 🕰️ 5. Time Machine `NEW`
-
-Enter any topic (e.g., "investing", "entrepreneurship", "family") and the system retrieves articles across different years, asking AI to trace your **cognitive evolution timeline** — from your earliest naive ideas to your latest deep insights.
-
-> Your personal "Chronicle of Thought."
-
-<p align="center">
-  <img src="docs/images/time_machine.png" width="700" alt="Time Machine"/>
-</p>
+- give the repo a `Star`
+- post a screenshot
+- share your archive size and your results
+- open an Issue or PR
 
 ---
 
-### 📚 6. Auto-Publisher `NEW`
+## Quick Start in 10 Minutes
 
-Give it a theme, and AI will dig through your entire knowledge base to generate a **book outline with chapter drafts** — all strictly based on your historical writings, preserving your authentic voice.
+### 1. Requirements
 
----
+- Python `3.10+`
+- Git
+- a valid `GOOGLE_API_KEY`
+- a valid `GCP_PROJECT_ID`
 
-### ⚔️ 7. Cognitive Challenger `NEW`
-
-AI becomes a hardcore Devil's Advocate coach. When you're about to make an impulsive big decision, it digs through your own writing history and **uses your own past words to challenge you**, delivering soul-piercing triple questions.
-
-> *"Your last startup's corpse isn't even cold yet. What makes you think this new one will survive?"*
-
-<p align="center">
-  <img src="docs/images/cognitive_challenger.png" width="700" alt="Cognitive Challenger"/>
-</p>
-
----
-
-### 🎙️ 8. Podcast Generator `NEW`
-
-Enter a topic and AI automatically generates a complete **two-person podcast dialogue script** (Host/Guest format) with timestamps, sound effect cues, and golden quote highlights — ready for immediate recording.
-
-<p align="center">
-  <img src="docs/images/podcast_generator.png" width="700" alt="Podcast Generator"/>
-</p>
-
----
-
-## 🚀 Quick Start
-
-### 1️⃣ Prerequisites
-
-Make sure you have **Python 3.10+** installed. Then:
+### 2. Clone the repo
 
 ```bash
 git clone https://github.com/xingjia10086/My-Digital-Mentor.git
 cd My-Digital-Mentor
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Configure API Keys
+### 4. Create your `.env`
 
 ```bash
-cp .env.example .env    # Mac/Linux
-copy .env.example .env  # Windows
+cp .env.example .env
 ```
 
-Open `.env` and fill in your keys:
+Fill in the minimum required values:
 
-| Variable | Required | Purpose | How to Get |
-|---|:---:|---|---|
-| `GOOGLE_API_KEY` | ✅ | Core AI Engine | [Google AI Studio](https://aistudio.google.com/app/apikey) (Free) |
-| `GCP_PROJECT_ID` | ✅ | Vector Embedding | [Google Cloud Console](https://console.cloud.google.com/) |
-| `APP_PASSWORD` | ✅ | Login Password | Set any password you like |
-| `FEISHU_APP_ID` | ❌ | Feishu Push | [Feishu Open Platform](https://open.feishu.cn/) |
-| `TWITTER_API_KEY` | ❌ | Auto Tweet | [Twitter Developer](https://developer.twitter.com/) |
+| Variable | Required | Purpose |
+|---|:---:|---|
+| `GOOGLE_API_KEY` | ✅ | Gemini generation and embeddings |
+| `GCP_PROJECT_ID` | ✅ | Google Cloud project |
+| `APP_PASSWORD` | ✅ | Password for the local web app |
 
-> 💡 **Minimum**: Only `GOOGLE_API_KEY`, `GCP_PROJECT_ID`, and `APP_PASSWORD` are needed for all 8 core features.
+Optional:
 
-### 3️⃣ Build Your AI Brain
+- `FEISHU_APP_ID`
+- `FEISHU_APP_SECRET`
+- `FEISHU_TARGET_USER_ID`
+- `TWITTER_API_KEY`
+- `TWITTER_API_SECRET`
+- `TWITTER_ACCESS_TOKEN`
+- `TWITTER_ACCESS_SECRET`
 
-Place your articles (`.txt`, `.md`) into `公众号/` or `gongzhonghao/`, then:
+### 5. Add your documents
+
+Put your `.md` and `.txt` files into either:
+
+- `公众号/`
+- `gongzhonghao/`
+
+### 6. Build your local knowledge base
 
 ```bash
 python rag_ingest.py
 ```
 
-### 4️⃣ Launch 🎉
+### 7. Launch the app
 
 ```bash
 streamlit run web_ui.py
 ```
 
-Open `http://localhost:8501`, enter your password, and enjoy your personal digital ecosystem!
+Then open:
 
-### 5️⃣ Mobile Access (Optional)
-
-Install [Tailscale](https://tailscale.com/) (free) on both your Mac and phone. Login with the same account, then access `http://your-mac-tailscale-ip:8501` from your phone browser. Use Safari's "Add to Home Screen" to make it a full-screen app.
+```text
+http://localhost:8501
+```
 
 ---
 
-## 📁 Project Structure
+## Before you deploy, know this
 
-```
+This is a real project, not a toy demo.  
+That is a strength, but it also means you should expect some setup friction.
+
+A few practical notes:
+
+- first-time ingestion can take a while if your archive is large
+- the better your archive, the better the output quality
+- `rag_ingest.py` creates a local `chroma_db/`
+- some environments may hit Google auth or networking issues during embedding
+- local Google configuration matters for certain ingestion paths
+
+The upside is equally real:
+
+> **You are building a controllable personal AI system, not renting a generic one.**
+
+---
+
+## Project Structure
+
+```text
 My-Digital-Mentor/
-├── web_ui.py              # 🌐 Main Web UI (Streamlit, 8 Modules)
-├── rag_ingest.py          # 📥 Knowledge Base Builder (Incremental)
-├── run_tests.py           # 🧪 Automated Test Suite
-├── daily_push.py          # 📤 Scheduled Feishu Quote Push
-├── feishu_bot.py          # 🤖 Feishu Smart News Bot
-├── twitter_auto_agent.py  # 🐦 Automated Twitter Publisher
-├── .env.example           # 🔑 Environment Variables Template
-├── requirements.txt       # 📦 Dependencies
-├── docs/images/           # 📸 Feature Screenshots
-├── 公众号/                # 📚 Article Data (Replace with yours)
-└── chroma_db/             # 🧠 Vector Knowledge Store (Auto-generated)
+├── web_ui.py              # Main Streamlit app with 8 modules
+├── rag_ingest.py          # Knowledge ingestion and vectorization
+├── ai_mentor.py           # Mentor-related experiment script
+├── ai_writer.py           # Writing-related experiment script
+├── knowledge_graph.py     # Knowledge graph generation
+├── twitter_auto_agent.py  # Social publishing helper
+├── daily_push.py          # Scheduled push script
+├── .env.example           # Environment template
+├── requirements.txt       # Python dependencies
+├── docs/images/           # README screenshots
+├── 公众号/                # Source article directory
+├── gongzhonghao/          # Source article directory
+└── chroma_db/             # Local vector store, generated after ingestion
 ```
 
 ---
 
-## 🔧 Architecture
+## Tech Stack
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Streamlit  │────▶│  LangChain   │────▶│  ChromaDB    │
-│   Web UI     │     │  RAG Engine  │     │  Vector Store│
-│  (8 Modules) │     │  (Retrieval) │     │  (30K Chunks)│
-└──────────────┘     └──────────────┘     └──────────────┘
-       │                    │
-       ▼                    ▼
-┌──────────────┐     ┌──────────────┐
-│ Google Gemini│     │   Embeddings │
-│   2.5 Pro    │     │ gemini-001   │
-│ (Generation) │     │ (Vectorize)  │
-└──────────────┘     └──────────────┘
-```
+- `Streamlit`
+- `LangChain`
+- `ChromaDB`
+- `Google Gemini`
+- `Google Embeddings`
+- `Python`
 
 ---
 
-## ⚠️ Security
+## Why this repo deserves a Star
 
-- 🔒 All secrets managed via `.env` — **never tracked by Git**
-- 🛡️ Robust `.gitignore` blocks `.env`, `chroma_db/`, and sensitive files
-- ⚡ Built-in API Key recovery panel: graceful error handling
-- 🔄 All network calls include automatic retry with exponential backoff
+If you believe the future of AI is not just bigger models, but more personal models, this repo is part of that direction.
 
-> **⚠️ NEVER push your `.env` file to any public repository!**
+This project explores a powerful idea:
+
+> **The most valuable AI may not be the AI that knows everything. It may be the AI that knows you.**
+
+If that resonates, give it a `Star`.
+
+It helps:
+
+- more creators discover personal RAG workflows
+- more developers contribute ideas and fixes
+- more people treat their writing archive as an asset, not a graveyard
 
 ---
 
-## 🤝 License
+## Security Notes
 
-MIT License · Star ⭐ · Fork 🍴 · PRs Welcome 🎉
+- keep your secrets in `.env`
+- never commit `.env` to a public repo
+- `chroma_db/` contains your local knowledge asset
+- rotate exposed API keys immediately
 
-*Powered by Google Gemini 2.5 Pro · LangChain · ChromaDB · Streamlit*
+---
+
+## License
+
+MIT
+
+If this project gave you a new idea about personal AI, digital memory, or creator tooling, star the repo and share it.
+
+---
+
+## More Resources
+
+- [中文 README](README.md)
+- [GitHub Growth Kit](docs/GITHUB_GROWTH_KIT.md)
+- [Launch Copy Final](docs/LAUNCH_COPY_FINAL.md)
