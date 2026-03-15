@@ -1,0 +1,58 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" fill="#F4EFE7"/>
+  <rect x="32" y="32" width="1536" height="836" rx="28" fill="url(#bg)"/>
+
+  <circle cx="1360" cy="170" r="210" fill="url(#glow1)" opacity="0.55"/>
+  <circle cx="250" cy="760" r="220" fill="url(#glow2)" opacity="0.5"/>
+  <circle cx="1280" cy="720" r="160" fill="url(#glow3)" opacity="0.32"/>
+
+  <rect x="104" y="108" width="204" height="44" rx="22" fill="#FFF7E8" fill-opacity="0.18" stroke="#FFF7E8" stroke-opacity="0.28"/>
+  <text x="136" y="137" fill="#FFF4DA" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">MY DIGITAL MENTOR</text>
+
+  <text x="104" y="258" fill="#FFFDF8" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="800">Write from your archive,</text>
+  <text x="104" y="346" fill="#FFFDF8" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="800">not from a blank page.</text>
+
+  <text x="108" y="430" fill="#E8E2D6" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="500">Turn years of articles, notes, newsletters, and journals into</text>
+  <text x="108" y="478" fill="#E8E2D6" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="500">an AI writing system that sounds closer to you.</text>
+
+  <rect x="104" y="560" width="540" height="122" rx="26" fill="#FFF7E8" fill-opacity="0.1" stroke="#FFF7E8" stroke-opacity="0.24"/>
+  <text x="136" y="616" fill="#FFFDF8" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">Core loop</text>
+  <text x="136" y="664" fill="#F0E8DA" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="500">Import archive -> Retrieve old ideas -> Generate new drafts -> Compound</text>
+
+  <rect x="986" y="130" width="470" height="610" rx="30" fill="#FFF7E8" fill-opacity="0.08" stroke="#FFF7E8" stroke-opacity="0.22"/>
+  <rect x="1036" y="186" width="372" height="54" rx="18" fill="#FFF7E8" fill-opacity="0.14"/>
+  <rect x="1036" y="274" width="300" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.9"/>
+  <rect x="1036" y="316" width="338" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.45"/>
+  <rect x="1036" y="386" width="154" height="164" rx="24" fill="#FFB45A" fill-opacity="0.2"/>
+  <rect x="1220" y="388" width="150" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.9"/>
+  <rect x="1220" y="430" width="116" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.58"/>
+  <rect x="1220" y="472" width="134" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.36"/>
+  <rect x="1220" y="534" width="150" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.9"/>
+  <rect x="1220" y="576" width="126" height="22" rx="11" fill="#FFFDF8" fill-opacity="0.58"/>
+
+  <path d="M1072 494L1128 438L1164 474L1264 378" stroke="#FFF7E8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1264" cy="378" r="12" fill="#FFFDF8"/>
+
+  <rect x="1008" y="778" width="446" height="64" rx="22" fill="#FFF7E8" fill-opacity="0.1" stroke="#FFF7E8" stroke-opacity="0.2"/>
+  <text x="1040" y="819" fill="#FFFDF8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">Archive-first AI Writer · Mentor · Knowledge Graph</text>
+
+  <defs>
+    <linearGradient id="bg" x1="54" y1="48" x2="1548" y2="842" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#18212E"/>
+      <stop offset="0.48" stop-color="#243248"/>
+      <stop offset="1" stop-color="#171F2C"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1360 170) rotate(90) scale(210)">
+      <stop stop-color="#FFCC8B"/>
+      <stop offset="1" stop-color="#FFCC8B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(250 760) rotate(90) scale(220)">
+      <stop stop-color="#79E6C7"/>
+      <stop offset="1" stop-color="#79E6C7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1280 720) rotate(90) scale(160)">
+      <stop stop-color="#8FB1FF"/>
+      <stop offset="1" stop-color="#8FB1FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

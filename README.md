@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/main_dashboard.png" width="820" alt="My Digital Mentor Dashboard"/>
+  <img src="docs/images/hero_cover.svg" width="920" alt="My Digital Mentor Hero Cover"/>
 </p>
 
 <h1 align="center">My Digital Mentor · 我的数字导师</h1>
