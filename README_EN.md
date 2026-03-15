@@ -42,6 +42,15 @@
   <img src="docs/images/knowledge_graph.png" width="405" alt="Knowledge Graph Preview"/>
 </p>
 
+## Best For
+
+| Audience | What you get |
+|---|---|
+| Writers and newsletter authors | Use past articles as the starting point for the next draft instead of staring at a blank page. |
+| Founders and personal brands | Reuse your archived thinking to publish content that still sounds like you. |
+| Researchers and knowledge workers | Recover old ideas from years of notes and turn them into denser new output. |
+| Anyone with a real archive | Turn content storage into a compounding production system. |
+
 ---
 
 ## Why this project is different
