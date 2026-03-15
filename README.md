@@ -9,15 +9,13 @@
 </p>
 
 <p align="center">
-  <a href="https://xingjia.xyz"><b>正式在线体验: https://xingjia.xyz</b></a>
-</p>
-
-<p align="center">
   它不是另一个通用聊天机器人。<br/>
   它首先是一个基于你个人知识库运行的 <b>Personal AI Writer</b>，再逐步延伸成你的数字大脑与思想系统。
 </p>
 
 <p align="center">
+  <a href="https://xingjia.xyz"><img src="https://img.shields.io/badge/正式在线体验-FF6F00?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo"/></a>
+  <a href="https://github.com/xingjia10086/My-Digital-Mentor"><img src="https://img.shields.io/badge/GitHub%20Repo-111111?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo"/></a>
   <a href="README_EN.md"><img src="https://img.shields.io/badge/English-FF6F00?style=for-the-badge&logo=translate&logoColor=white" alt="English Version"/></a>
   <a href="#-10-分钟快速体验"><img src="https://img.shields.io/badge/10分钟快速体验-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
   <a href="#-它到底能做什么"><img src="https://img.shields.io/badge/功能总览-2979FF?style=for-the-badge&logo=grid&logoColor=white" alt="Features"/></a>

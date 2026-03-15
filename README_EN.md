@@ -9,14 +9,12 @@
 </p>
 
 <p align="center">
-  <a href="https://xingjia.xyz"><b>Live Demo: https://xingjia.xyz</b></a>
-</p>
-
-<p align="center">
   Not another generic chatbot. First, it is a <b>Personal AI Writer</b> built from your own archive. Then it expands into a broader personal knowledge system.
 </p>
 
 <p align="center">
+  <a href="https://xingjia.xyz"><img src="https://img.shields.io/badge/Live%20Demo-FF6F00?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo"/></a>
+  <a href="https://github.com/xingjia10086/My-Digital-Mentor"><img src="https://img.shields.io/badge/GitHub%20Repo-111111?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo"/></a>
   <a href="README.md"><img src="https://img.shields.io/badge/中文文档-E53935?style=for-the-badge&logo=translate&logoColor=white" alt="Chinese Version"/></a>
   <a href="#-quick-start-in-10-minutes"><img src="https://img.shields.io/badge/Quick%20Start-00C853?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick Start"/></a>
   <a href="#-what-you-can-actually-do-with-it"><img src="https://img.shields.io/badge/Feature%20Tour-2979FF?style=for-the-badge&logo=grid&logoColor=white" alt="Feature Tour"/></a>
