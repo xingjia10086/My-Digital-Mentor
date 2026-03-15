@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <a href="https://xingjia.xyz"><b>Live Demo: https://xingjia.xyz</b></a>
+</p>
+
+<p align="center">
   Not another generic chatbot. First, it is a <b>Personal AI Writer</b> built from your own archive. Then it expands into a broader personal knowledge system.
 </p>
 

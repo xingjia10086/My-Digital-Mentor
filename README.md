@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <a href="https://xingjia.xyz"><b>正式在线体验: https://xingjia.xyz</b></a>
+</p>
+
+<p align="center">
   它不是另一个通用聊天机器人。<br/>
   它首先是一个基于你个人知识库运行的 <b>Personal AI Writer</b>，再逐步延伸成你的数字大脑与思想系统。
 </p>
