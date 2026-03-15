@@ -29,6 +29,19 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
 </p>
 
+<p align="center">
+  <b>Product Preview</b>
+</p>
+
+<p align="center">
+  <img src="docs/images/ai_writer.png" width="820" alt="AI Writer Live Preview"/>
+</p>
+
+<p align="center">
+  <img src="docs/images/chat_mentor_response.png" width="405" alt="Mentor Chat Preview"/>
+  <img src="docs/images/knowledge_graph.png" width="405" alt="Knowledge Graph Preview"/>
+</p>
+
 ---
 
 ## Why this project is different

@@ -30,6 +30,19 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
 </p>
 
+<p align="center">
+  <b>产品预览</b>
+</p>
+
+<p align="center">
+  <img src="docs/images/ai_writer.png" width="820" alt="AI Writer Live Preview"/>
+</p>
+
+<p align="center">
+  <img src="docs/images/chat_mentor_response.png" width="405" alt="Mentor Chat Preview"/>
+  <img src="docs/images/knowledge_graph.png" width="405" alt="Knowledge Graph Preview"/>
+</p>
+
 ---
 
 ## 为什么这个项目值得你点开
