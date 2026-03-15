@@ -135,16 +135,18 @@
 
 ## 它到底能做什么
 
-当前仓库已经实现 8 个核心模块，其中最值得优先体验的核心模块是：
+当前仓库已经实现 8 个模块，但最适合 README 首页传播的产品故事，其实可以先收敛成 3 个核心演示：
+
+- 先看替身写作
+- 再看灵魂导师如何基于你的旧内容回应你
+- 最后看思想图谱如何把内容资产可视化
+
+最强的 3 个演示如下。
 
 ### 1. 灵魂导师
 
 输入你的困惑，系统会从你的知识库里召回相关内容，再结合大模型输出建议。  
 最有意思的地方是：它经常会“引用你自己曾经写过的话来安慰你”。
-
-<p align="center">
-  <img src="docs/images/chat_mentor_response.png" width="760" alt="AI Mentor Response"/>
-</p>
 
 ### 2. 替身写作
 
@@ -161,10 +163,23 @@
 非常适合做年度回顾、个人品牌展示、内容资产整理。
 
 <p align="center">
-  <img src="docs/images/knowledge_graph.png" width="760" alt="Knowledge Graph"/>
+  <img src="docs/images/chat_mentor_response.png" width="380" alt="AI Mentor Response"/>
+  <img src="docs/images/knowledge_graph.png" width="380" alt="Knowledge Graph"/>
 </p>
 
-### 4. 推特分发机
+### 4. 扩展能力
+
+当“旧文章 -> 新内容”的主循环成立之后，这个仓库还继续扩展出了：
+
+- 推特分发机
+- 思想时光机
+- 个人数字出版局
+- 认知对抗教练
+- AI 播客生成器
+
+这也是它和普通单点 AI 工具最大的不同：主入口很清晰，但延展空间很大。
+
+### 5. 推特分发机
 
 从你的旧内容里提炼可传播表达，生成双语短帖和配图提示词。  
 适合做内容二次分发和海外表达。
@@ -173,7 +188,7 @@
   <img src="docs/images/twitter_agent.png" width="760" alt="Twitter Agent"/>
 </p>
 
-### 5. 思想时光机
+### 6. 思想时光机
 
 围绕一个主题，按年份回看你的观点如何变化。  
 这是“复盘自己认知升级路径”的非常强的功能。
@@ -182,12 +197,12 @@
   <img src="docs/images/time_machine.png" width="760" alt="Time Machine"/>
 </p>
 
-### 6. 个人数字出版局
+### 7. 个人数字出版局
 
 把你过去零散的内容，自动编排成一本书的大纲和章节初稿。  
 如果你一直想出书，这个模块非常实用。
 
-### 7. 认知对抗教练
+### 8. 认知对抗教练
 
 让 AI 使用你过去写过的话来挑战你当下的决策。  
 这个模块特别适合创业、投资、重大转向时使用。
@@ -196,7 +211,7 @@
   <img src="docs/images/cognitive_challenger.png" width="760" alt="Cognitive Challenger"/>
 </p>
 
-### 8. AI 播客生成器
+### 9. AI 播客生成器
 
 把你的知识库自动组织成播客对谈脚本，带时间戳、角色、结构。  
 适合录音、直播、视频口播。

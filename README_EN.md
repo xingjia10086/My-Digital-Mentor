@@ -150,61 +150,15 @@ If you have years of content, the value compounds fast.
 
 ---
 
-## Visual Tour
-
-### Main Dashboard
-
-<p align="center">
-  <img src="docs/images/main_dashboard.png" width="860" alt="Main dashboard"/>
-</p>
-
-### Mentor Conversation Experience
-
-<p align="center">
-  <img src="docs/images/chat_mentor_response.png" width="820" alt="AI mentor conversation"/>
-</p>
-
-### Writing Assistant
-
-<p align="center">
-  <img src="docs/images/ai_writer.png" width="820" alt="AI writer interface"/>
-</p>
-
-### Knowledge Graph
-
-<p align="center">
-  <img src="docs/images/knowledge_graph.png" width="820" alt="Knowledge graph"/>
-</p>
-
-### Time Machine
-
-<p align="center">
-  <img src="docs/images/time_machine.png" width="820" alt="Time machine"/>
-</p>
-
-### Cognitive Challenger
-
-<p align="center">
-  <img src="docs/images/cognitive_challenger.png" width="820" alt="Cognitive challenger"/>
-</p>
-
-### Podcast Generator
-
-<p align="center">
-  <img src="docs/images/podcast_generator.png" width="820" alt="Podcast generator"/>
-</p>
-
-### Twitter Agent
-
-<p align="center">
-  <img src="docs/images/twitter_agent.png" width="820" alt="Twitter agent"/>
-</p>
-
----
-
 ## What you can actually do with it
 
-The current app includes 8 core modules. The most important one to start with is the AI Writer use case.
+The current app includes 8 modules, but the strongest landing story is simpler:
+
+- start with the AI Writer
+- prove value with archive-grounded mentor responses
+- make the archive visible through the knowledge graph
+
+The three strongest demos are below.
 
 ### 1. AI Mentor
 
@@ -227,6 +181,10 @@ Useful for:
 - scripts
 - speech drafts
 
+<p align="center">
+  <img src="docs/images/ai_writer.png" width="820" alt="AI writer interface"/>
+</p>
+
 ### 3. Knowledge Graph
 
 Sample your knowledge base, extract recurring concepts, and turn them into a visual map of your worldview.
@@ -238,7 +196,22 @@ Useful for:
 - intellectual self-audits
 - social sharing
 
-### 4. Twitter Agent
+<p align="center">
+  <img src="docs/images/chat_mentor_response.png" width="405" alt="AI mentor conversation"/>
+  <img src="docs/images/knowledge_graph.png" width="405" alt="Knowledge graph"/>
+</p>
+
+### 4. Extended modules
+
+Once the archive-first writing loop works, the repo expands into:
+
+- Twitter Agent for short-form repurposing
+- Time Machine for idea evolution across years
+- Auto-Publisher for book structure and chapter drafts
+- Cognitive Challenger for archive-based decision pressure testing
+- Podcast Generator for turning archive material into spoken content
+
+### 5. Twitter Agent
 
 Surface old ideas from your archive and rewrite them into short-form, shareable bilingual posts with image prompts.
 
@@ -248,7 +221,7 @@ Useful for:
 - global audience experiments
 - social media cadence
 
-### 5. Time Machine
+### 6. Time Machine
 
 Enter a topic and trace how your thinking evolved over the years.
 
@@ -259,7 +232,7 @@ Useful for:
 - topic evolution reports
 - public essays about how your views changed
 
-### 6. Auto-Publisher
+### 7. Auto-Publisher
 
 Generate a book outline and chapter draft structure from your archive.
 
@@ -268,7 +241,7 @@ Useful for:
 - turning an article archive into a book project
 - finding the hidden structure in years of scattered writing
 
-### 7. Cognitive Challenger
+### 8. Cognitive Challenger
 
 Ask the AI to challenge your current decision using your own previous writing as ammunition.
 
@@ -279,7 +252,7 @@ Useful for:
 - investment reflection
 - major life tradeoffs
 
-### 8. Podcast Generator
+### 9. Podcast Generator
 
 Turn your ideas into a two-person podcast script with structure, dialogue, timestamps, and quotable moments.
 
