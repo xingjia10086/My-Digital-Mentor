@@ -2,10 +2,11 @@ streamlit
 google-genai
 langchain
 langchain-community
-langchain-google-vertexai
 langchain-google-genai
 chromadb
 edge-tts
 python-dotenv
 lark-oapi
 schedule
+tenacity
+langchain-text-splitters

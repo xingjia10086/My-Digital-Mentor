@@ -5,18 +5,17 @@ import hashlib
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_vertexai import VertexAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 
 load_dotenv()
 
 # Configuration
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
-LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
-EMBEDDING_MODEL = "text-embedding-004"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 TRACKER_FILE = os.path.join(BASE_DIR, "ingestion_tracker.json")
 
 # Directories containing WeChat articles
@@ -144,12 +143,11 @@ def main():
     chunks = splitter.split_documents(raw_documents)
     print(f"Total new chunks created: {len(chunks)}")
     
-    # 3. Initialize Vertex AI Embeddings
-    print(f"\nInitializing Vertex AI Embeddings ({EMBEDDING_MODEL})...")
-    embeddings = VertexAIEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        project=PROJECT_ID,
-        location=LOCATION
+    # 3. Initialize Google Generative AI Embeddings (API Key only, no GCP auth needed)
+    print(f"\nInitializing Google Generative AI Embeddings ({EMBEDDING_MODEL})...")
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model=EMBEDDING_MODEL,
+        google_api_key=API_KEY
     )
     
     # 4. Add to existing ChromaDB in batches

@@ -1,17 +1,15 @@
 import os
 from dotenv import load_dotenv
 from google import genai
-from langchain_google_vertexai import VertexAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
 
 load_dotenv()
 
 # Configuration
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
-LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
-EMBEDDING_MODEL = "text-embedding-004"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 
 # Use the new google-genai SDK with the API key
 API_KEY = os.environ.get("GOOGLE_API_KEY", "")
@@ -65,10 +63,9 @@ def main():
         print(f"\n[使用模型]: {chosen_model}")
     
     print(f"\n正在加载本地 ChromaDB...")
-    embeddings = VertexAIEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        project=PROJECT_ID,
-        location=LOCATION
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model=EMBEDDING_MODEL,
+        google_api_key=API_KEY
     )
     
     vectorstore = Chroma(

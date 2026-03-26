@@ -8,21 +8,15 @@ from google import genai
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
-from typing import List, Dict, Any
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 # Override loaded variables if environment variables already exist
 load_dotenv(override=True)
 
 # --- Configuration ---
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
-LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
-
-# Automatically use relative path
 CHROMA_PERSIST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chroma_db")
 
 EMBEDDING_MODEL = "models/gemini-embedding-001"
-API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 MAX_HISTORY = 3
 TEMP_AUDIO_FILE = "web_voice.mp3"
 
@@ -37,30 +31,30 @@ st.set_page_config(
 # --- Initialize Clients ---
 @st.cache_resource
 def get_clients():
-    # Force use of API key-only client to avoid Google Cloud ADC requirement
-    client = genai.Client(api_key=API_KEY, http_options={'api_version': 'v1alpha'})
-    
+    api_key = os.environ.get("GOOGLE_API_KEY", "")
+    client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
+
     available = []
     for m in client.models.list():
         if 'gemini' in m.name.lower() and 'generate' in str(getattr(m, 'supported_actions', '')).lower():
             available.append(m.name)
-            
-    chosen_model = available[0] if available else "models/gemini-1.5-pro-latest"
-    for preferred in ["gemini-2.5-pro", "gemini-1.5-pro", "gemini-1.5-flash"]:
+
+    # Pick the best preferred model; use a flag to break correctly
+    chosen_model = available[0] if available else "models/gemini-2.0-flash"
+    found_preferred = False
+    for preferred in ["gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"]:
         for a in available:
             if preferred in a:
                 chosen_model = a
+                found_preferred = True
                 break
-        if chosen_model != available[0]: # Found a preferred model
+        if found_preferred:
             break
-            
-    # --- 最终修复：使用 GoogleGenerativeAIEmbeddings 以便直接使用 API_KEY ---
-    from langchain_google_genai import GoogleGenerativeAIEmbeddings
-    embeddings = GoogleGenerativeAIEmbeddings(model=EMBEDDING_MODEL, google_api_key=API_KEY)
 
+    embeddings = GoogleGenerativeAIEmbeddings(model=EMBEDDING_MODEL, google_api_key=api_key)
     vectorstore = Chroma(persist_directory=CHROMA_PERSIST_DIR, embedding_function=embeddings, collection_name="wechat_articles")
     retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
-    
+
     return client, chosen_model, retriever, vectorstore
 
 # --- Network Resilience Helpers ---
@@ -71,11 +65,10 @@ def resilient_retrieve(retriever, query: str):
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def resilient_generate_stream(client, model: str, contents: str):
-    """Wrapper for Gemini generation stream to handle temporary network/SSL drops."""
-    # Since streaming returns an iterator, we yield from it. If the connection breaks mid-stream,
-    # the retry logic will re-execute the *entire* function, meaning text might be duplicated.
-    # For UI robustness, it's often safer to just buffer or let the UI handle partials.
-    # However, for the initial connection drop (which SSL EOF usually is), this prevents the crash.
+    """Retry only the initial API connection setup (not mid-stream chunks).
+    If the initial call to generate_content_stream fails, it will be retried up to 3 times.
+    Mid-stream drops are handled in the calling loop's except block.
+    """
     return client.models.generate_content_stream(model=model, contents=contents)
 
 # --- Helper Functions ---
@@ -175,29 +168,29 @@ def main():
         """)
         new_key = st.text_input("🔑 输入全新的 GOOGLE_API_KEY", type="password")
         if st.button("更新密钥并重启系统"):
-            env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
-            if os.path.exists(env_file):
-                with open(env_file, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
-                with open(env_file, 'w', encoding='utf-8') as f:
-                    found = False
-                    for line in lines:
-                        if line.startswith("GOOGLE_API_KEY="):
-                            f.write(f"GOOGLE_API_KEY={new_key}\n")
-                            found = True
-                        else:
-                            f.write(line)
-                    if not found:
-                        f.write(f"\nGOOGLE_API_KEY={new_key}\n")
-                        
-            # Force update of os.environ and cached variable
-            os.environ["GOOGLE_API_KEY"] = new_key
-            global API_KEY
-            API_KEY = new_key
-            
-            # Clear resource cache to force a re-init
-            st.cache_resource.clear()
-            st.rerun()
+            # Sanitize: strip whitespace/newlines to avoid corrupting .env
+            new_key = new_key.strip()
+            if new_key:
+                env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+                if os.path.exists(env_file):
+                    with open(env_file, 'r', encoding='utf-8') as f:
+                        lines = f.readlines()
+                    with open(env_file, 'w', encoding='utf-8') as f:
+                        found = False
+                        for line in lines:
+                            if line.startswith("GOOGLE_API_KEY="):
+                                f.write(f"GOOGLE_API_KEY={new_key}\n")
+                                found = True
+                            else:
+                                f.write(line)
+                        if not found:
+                            f.write(f"\nGOOGLE_API_KEY={new_key}\n")
+
+                # Update os.environ so get_clients() re-reads the new key
+                os.environ["GOOGLE_API_KEY"] = new_key
+                # Clear resource cache to force a re-init
+                st.cache_resource.clear()
+                st.rerun()
         st.stop()
 
     if app_mode == "🧠 灵魂导师 (对话)":
@@ -379,7 +372,7 @@ def render_knowledge_graph(client, chosen_model, vectorstore):
         st.markdown("---")
         
         with st.spinner("正在读取知识库数据..."):
-            collection_data = vectorstore._collection.get()
+            collection_data = vectorstore.get()
             all_docs = collection_data['documents']
             total_docs = len(all_docs)
             sample_size = min(200, total_docs)
@@ -735,7 +728,7 @@ def render_twitter_agent(client, chosen_model, vectorstore):
                 context_str = format_docs(docs)
                 sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
             else:
-                collection_data = vectorstore._collection.get()
+                collection_data = vectorstore.get()
                 all_docs = collection_data['documents']
                 all_metadatas = collection_data['metadatas']
                 sample_indices = random.sample(range(len(all_docs)), 5)
