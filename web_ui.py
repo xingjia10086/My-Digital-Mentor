@@ -168,8 +168,8 @@ def main():
         """)
         new_key = st.text_input("🔑 输入全新的 GOOGLE_API_KEY", type="password")
         if st.button("更新密钥并重启系统"):
-            # Sanitize: strip whitespace/newlines to avoid corrupting .env
-            new_key = new_key.strip()
+            # Sanitize: remove all whitespace/newlines to avoid corrupting .env
+            new_key = re.sub(r'\s+', '', new_key)
             if new_key:
                 env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
                 if os.path.exists(env_file):
@@ -375,8 +375,11 @@ def render_knowledge_graph(client, chosen_model, vectorstore):
             collection_data = vectorstore.get()
             all_docs = collection_data['documents']
             total_docs = len(all_docs)
+            if total_docs == 0:
+                st.warning("知识库为空，请先运行 `rag_ingest.py` 导入文章。")
+                st.stop()
             sample_size = min(200, total_docs)
-            
+
             sampled_docs = random.sample(all_docs, sample_size)
             combined_text = "\n\n".join(sampled_docs)
             st.info(f"已从 {total_docs} 个片段中随机抽样了 {sample_size} 个核心片段。")
@@ -731,12 +734,16 @@ def render_twitter_agent(client, chosen_model, vectorstore):
                 collection_data = vectorstore.get()
                 all_docs = collection_data['documents']
                 all_metadatas = collection_data['metadatas']
-                sample_indices = random.sample(range(len(all_docs)), 5)
-                
+                sample_count = min(5, len(all_docs))
+                if sample_count == 0:
+                    st.warning("知识库为空，请先运行 `rag_ingest.py` 导入文章。")
+                    st.stop()
+                sample_indices = random.sample(range(len(all_docs)), sample_count)
+
                 docs = []
                 for idx in sample_indices:
                     docs.append(Document(page_content=all_docs[idx], metadata=all_metadatas[idx]))
-                
+
                 context_str = format_docs(docs)
                 sources = list(set([d.metadata.get('source_file', '未知') for d in docs]))
 
