@@ -15,6 +15,7 @@ chroma_db/
 
 # Temporary data / logs
 *.json
+!site/public/ai-summary.json
 *.log
 
 # OS generated files

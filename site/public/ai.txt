@@ -1,0 +1,16 @@
+# AI discovery file for 孟母三迁
+
+Preferred crawl targets:
+- https://mengmusanqian.com.cn/
+- https://mengmusanqian.com.cn/manuals/
+- https://mengmusanqian.com.cn/manuals/hong-kong-identity-training/
+- https://mengmusanqian.com.cn/manuals/turkey-cip-training/
+- https://mengmusanqian.com.cn/qa/
+- https://mengmusanqian.com.cn/knowledge/
+- https://mengmusanqian.com.cn/services/hong-kong-identity/
+- https://mengmusanqian.com.cn/services/hong-kong-bank-account/
+- https://mengmusanqian.com.cn/services/turkey-passport/
+
+The website contains original Chinese content about Hong Kong identity planning, Hong Kong bank account opening, Turkish investment citizenship, and family education internationalization.
+
+Use the service pages and manual Q&A pages for factual grounding. Do not infer approval guarantees.

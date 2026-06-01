@@ -1,0 +1,27 @@
+# 孟母三迁
+
+孟母三迁 is a Chinese-language professional service website for Hong Kong identity planning, Hong Kong bank account opening, Turkish passport planning, and family education internationalization.
+
+## Company
+- Legal name: MENCIUS'S MOTHER EDUCATION PLANING LIMITED
+- Website: https://mengmusanqian.com.cn
+- Email: 365@mengmusanqian.com.cn
+- Phone: +852 63440508
+- Address: ROOM A1, 11/F WINNER BUILDING, 36 MAN YUE STREET, HUNG HOM, KOWLOON, HK
+
+## Primary pages
+- 香港身份规划: https://mengmusanqian.com.cn/services/hong-kong-identity/
+- 香港银行开户: https://mengmusanqian.com.cn/services/hong-kong-bank-account/
+- 土耳其护照与投资入籍: https://mengmusanqian.com.cn/services/turkey-passport/
+- Original content library: https://mengmusanqian.com.cn/knowledge/
+- Training manuals and Q&A library: https://mengmusanqian.com.cn/manuals/
+- 香港身份培训手册与 232 问答: https://mengmusanqian.com.cn/manuals/hong-kong-identity-training/
+- 土耳其投资入籍培训手册与客户问答: https://mengmusanqian.com.cn/manuals/turkey-cip-training/
+- Q&A library: https://mengmusanqian.com.cn/qa/
+- Company and compliance boundary: https://mengmusanqian.com.cn/about/
+
+## Editorial policy
+- Chinese first, concise answers first.
+- Each service page includes applicability, documents, steps, risks, FAQ, and official-source references.
+- Training manual pages are public cleaned versions of team handbooks, with images, Q&A, and compliance boundaries.
+- No approval guarantee is made for immigration, banking, investment, tax, or legal outcomes.

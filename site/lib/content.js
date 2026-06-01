@@ -15,6 +15,7 @@ export const landingContent = {
       ["problem", "Problem"],
       ["how", "How It Works"],
       ["difference", "Why It Wins"],
+      ["/qa/", "Q&A Library"],
       ["use-cases", "Use Cases"]
     ],
     switcher: {
@@ -139,6 +140,7 @@ export const landingContent = {
       ["problem", "问题"],
       ["how", "原理"],
       ["difference", "差异"],
+      ["/qa/", "问答知识库"],
       ["use-cases", "场景"]
     ],
     switcher: {

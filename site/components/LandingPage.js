@@ -1,4 +1,6 @@
 function Topbar({ content }) {
+  const hrefFor = (id) => (id.startsWith("/") || id.startsWith("http") ? id : `#${id}`);
+
   return (
     <header className="topbar">
       <div className="shell topbar-inner">
@@ -8,7 +10,7 @@ function Topbar({ content }) {
         </div>
         <nav className="nav">
           {content.nav.map(([id, label]) => (
-            <a key={id} href={`#${id}`}>
+            <a key={id} href={hrefFor(id)}>
               {label}
             </a>
           ))}
