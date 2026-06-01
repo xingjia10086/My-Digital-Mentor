@@ -6,6 +6,6 @@ export default function robots() {
       userAgent: "*",
       allow: "/"
     },
-    sitemap: [`${getSiteUrl()}/sitemap.xml`, "https://mengmusanqian.com.cn/sitemap.xml"]
+    sitemap: `${getSiteUrl()}/sitemap.xml`
   };
 }
